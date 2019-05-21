@@ -3,9 +3,12 @@ import json
 import base64
 import nacl.encoding
 import nacl.signing
+import storekey
+import time
 
-url = "http://cs302.kiwi.land/api/add_pubkey"
-private_key_hex = b'ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2'
+
+url = "http://cs302.kiwi.land/api/rx_broadcast"
+private_key_hex = storekey.return_private_key()
 
 #create HTTP BASIC authorization header
 username = "Mche226"
@@ -25,17 +28,21 @@ signing_key = nacl.signing.SigningKey(private_key_hex, encoder=nacl.encoding.Hex
 #public pair / converting to json
 verify_key = signing_key.verify_key
 verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
+login_server_record = "mche226,b9eba910b59549774d55d3ce49a7b4d46ab5e225cdcf2ac388cf356b5928b6bc,1558396877.296010,8369b9da8c9c6e1517ac70756d4d13ce406d8ff9f6c4e4bbce40436ca4e1d1f938f10b8289d9b3f65b6dbf5d0a3df8c4343f50f2db5dcfff142dbf37c8f3db00"
+time_creation = str(time.time())
 
-message_bytes = bytes(verify_key_hex_str + username, encoding='utf-8')
 #sign the message, which is the public + name
-signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+message_bytes = bytes(login_server_record+"ni hao world"+time_creation, encoding='utf-8')
+
+signed =signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
 signature_hex_str = signed.signature.decode('utf-8')
 
 
 payload = {
-    "pubkey" : verify_key_hex_str,
-    "username" : "Mche226",
-    "signature" : signature_hex_str,
+    "loginserver_record" : login_server_record,
+    "message" : "ni hao world",
+    "sender_created_at" : time_creation,
+    "signature" : signature_hex_str
 }
 
 

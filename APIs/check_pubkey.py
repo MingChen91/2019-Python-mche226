@@ -1,3 +1,4 @@
+
 import urllib.request
 import json
 import base64
@@ -6,8 +7,6 @@ import nacl.signing
 import storekey
 
 
-
-url = "http://cs302.kiwi.land/api/ping"
 private_key_hex = storekey.return_private_key()
 
 #create HTTP BASIC authorization header
@@ -28,26 +27,13 @@ signing_key = nacl.signing.SigningKey(private_key_hex, encoder=nacl.encoding.Hex
 #public pair / converting to json
 verify_key = signing_key.verify_key
 verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
-print(verify_key_hex_str)
 
-message_bytes = bytes(verify_key_hex_str, encoding='utf-8')
-#sign the message, which is the public + name
-signed =signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
-signature_hex_str = signed.signature.decode('utf-8')
+url = "http://cs302.kiwi.land/api/check_pubkey?pubkey=" + verify_key_hex_str
 
-
-payload = {
-    "pubkey" : verify_key_hex_str,
-    "signature" : signature_hex_str,
-}
-
-
-payload_str = json.dumps(payload)
-payload_data = payload_str.encode('utf-8')
 
 try:
     # report
-    req = urllib.request.Request(url, data=payload_data, headers=headers)
+    req = urllib.request.Request(url, headers=headers)
     response = urllib.request.urlopen(req)
     data = response.read() # read the received bytes
     encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)

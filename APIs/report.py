@@ -1,12 +1,15 @@
 import urllib.request
 import json
 import base64
+import nacl.encoding
+import nacl.signing
 
 url = "http://cs302.kiwi.land/api/report"
 
 #STUDENT TO UPDATE THESE...
 username = "Mche226"
 password = "MingChen91_1636027"
+
 
 #create HTTP BASIC authorization header
 credentials = ('%s:%s' % (username, password))
@@ -16,9 +19,21 @@ headers = {
     'Content-Type' : 'application/json; charset=utf-8',
 }
 
+
+private_key_hex = b'ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2'
+# Generate a new random signing key / private key generation and converting to json format
+signing_key = nacl.signing.SigningKey(private_key_hex, encoder=nacl.encoding.HexEncoder)
+
+#public pair / converting to json
+verify_key = signing_key.verify_key
+verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
+
+
+
 payload = {#     STUDENT TO COMPLETE THIS...
     "connection_location": "2",
-    "connection_address": "127.0.0.1:8000"
+    "connection_address": "127.0.0.1:8000",
+    "incoming_pubkey" : verify_key_hex_str
 }
 
 
