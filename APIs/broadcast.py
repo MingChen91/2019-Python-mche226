@@ -29,10 +29,11 @@ signing_key = nacl.signing.SigningKey(private_key_hex, encoder=nacl.encoding.Hex
 verify_key = signing_key.verify_key
 verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
 login_server_record = "mche226,b9eba910b59549774d55d3ce49a7b4d46ab5e225cdcf2ac388cf356b5928b6bc,1558396877.296010,8369b9da8c9c6e1517ac70756d4d13ce406d8ff9f6c4e4bbce40436ca4e1d1f938f10b8289d9b3f65b6dbf5d0a3df8c4343f50f2db5dcfff142dbf37c8f3db00"
-time_creation = str(time.time())
 
+time_creation = str(time.time())
+message = "jacob how do you bypass the time stamp"
 #sign the message, which is the public + name
-message_bytes = bytes(login_server_record+"ni hao world"+time_creation, encoding='utf-8')
+message_bytes = bytes(login_server_record+message+time_creation, encoding='utf-8')
 
 signed =signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
 signature_hex_str = signed.signature.decode('utf-8')
@@ -40,7 +41,7 @@ signature_hex_str = signed.signature.decode('utf-8')
 
 payload = {
     "loginserver_record" : login_server_record,
-    "message" : "ni hao world",
+    "message" : message,
     "sender_created_at" : time_creation,
     "signature" : signature_hex_str
 }
