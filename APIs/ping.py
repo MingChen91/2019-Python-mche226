@@ -8,6 +8,7 @@ import storekey
 
 
 url = "http://cs302.kiwi.land/api/ping"
+# reads the stored key and uses that
 private_key_hex = storekey.return_private_key()
 
 #create HTTP BASIC authorization header

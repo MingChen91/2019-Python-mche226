@@ -40,12 +40,6 @@ payload = {#     STUDENT TO COMPLETE THIS...
 payload_str = json.dumps(payload)
 payload_data = payload_str.encode('utf-8')
 
-#STUDENT TO COMPLETE:
-#1. convert the payload into json representation, 
-#2. ensure the payload is in bytes, not a string
-#3. pass the payload bytes into this function
-
-
 try:
     # report
     req = urllib.request.Request(url, data=payload_data, headers=headers)
