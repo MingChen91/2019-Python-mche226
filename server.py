@@ -2,7 +2,7 @@ import cherrypy
 import urllib.request
 import json
 import base64
-
+from APIs.ping import ping 
 
 startHTML = "<html><head><title>CS302 example</title><link rel='stylesheet' href='/static/example.css' /></head><body>"
 
@@ -44,7 +44,7 @@ class MainApp(object):
             
         Page += '<form action="/signin" method="post" enctype="multipart/form-data">'
         Page += 'Username: <input type="text" name="username"/><br/>'
-        Page += 'Password: <input type="text" name="password"/>'
+        Page += 'Password: <input type="password" name="password"/>'
         Page += '<input type="submit" value="Login"/></form>'
         return Page
     
@@ -83,41 +83,9 @@ class MainApp(object):
 ###
 
 def authoriseUserLogin(username, password):
-    # checks credentials vs hammonds login server, if response is ok, then login
-    # uses the report API which needs authentication
-    url = "http://cs302.kiwi.land/api/report"
-    # kept this here because I dont my own login
-    # username = "Mche226"
-    # password = "MingChen91_1636027"
-    credentials = ('%s:%s' % (username, password))
-    b64_credentials = base64.b64encode(credentials.encode('ascii'))
-    headers = {
-        'Authorization': 'Basic %s' % b64_credentials.decode('ascii'),
-        'Content-Type' : 'application/json; charset=utf-8',
-    }
+    response = ping(username,password)
 
-    payload = {
-        # check document for location number
-        "connection_location": "2", 
-        "connection_address": "127.0.0.1:8000"
-    }
-    payload_str = json.dumps(payload)
-    payload_data = payload_str.encode('utf-8')
-    
-    # sends the required information for the report api
-    # issue here where if the login server website is wrong, it still gives the same error
-    try:
-        req = urllib.request.Request(url, data=payload_data, headers=headers)
-        response = urllib.request.urlopen(req)
-        data = response.read() # read the received bytes
-        encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
-        response.close()
-    except urllib.error.HTTPError as error:
-        print(error.read())
-        return 1
-
-    JSON_object = json.loads(data.decode(encoding))
-    if JSON_object["response"] == "ok":
+    if response['authentication'] == "basic":
         return 0
     else:
         return 1
