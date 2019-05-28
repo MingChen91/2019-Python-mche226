@@ -11,9 +11,7 @@
 #            Python  (We use 3.5.x +)
 
 import os
-
 import cherrypy
-
 import server
 
 # The address we listen for connections on
