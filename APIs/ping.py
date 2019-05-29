@@ -3,7 +3,7 @@ import json
 import base64
 import nacl.encoding
 import nacl.signing
-import storekey
+import APIs.storekey
 
 def ping (username):
     """Calls the API ping and returns the response as a dictionary"""

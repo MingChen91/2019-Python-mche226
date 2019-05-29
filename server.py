@@ -2,7 +2,7 @@ import cherrypy
 import urllib.request
 import json
 import base64
-from ping import ping 
+from APIs.ping import ping 
 
 startHTML = "<html><head><title>CS302 example</title><link rel='stylesheet' href='/static/example.css' /></head><body>"
 
