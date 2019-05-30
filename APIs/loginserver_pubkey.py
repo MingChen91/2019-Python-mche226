@@ -1,20 +1,15 @@
 import urllib.request
 import json
 import base64
+import storekey
 
-
-def list_users(username,password):
-    """ Lists current active users from login server"""
-    url = "http://cs302.kiwi.land/api/list_users"
-
-    headers = {
-        'X-username': username,
-        'X-apikey': "5LlakWWMaXOfByBdOzFy",
-        'Content-Type' : 'application/json; charset=utf-8',
-    }
+def loginserver_pubkey():
+    """ Return the public key of the login server, which may be used to validate
+        loginserver_records in broadcasts / private messages """
+    url = "http://cs302.kiwi.land/api/loginserver_pubkey"
 
     try:
-        req = urllib.request.Request(url, headers=headers)
+        req = urllib.request.Request(url)
         response = urllib.request.urlopen(req)
         data = response.read() # read the received bytes
         encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
@@ -26,4 +21,4 @@ def list_users(username,password):
     response_dict = json.loads(data.decode(encoding))
     return(response_dict)
 
-print(list_users("mche226","MingChen91_1636027"))
+print(loginserver_pubkey())

@@ -4,10 +4,19 @@ import base64
 import nacl.encoding
 import nacl.signing
 import storekey
-def ping (username,password):
-    """Calls the API ping and returns the response as a dictionary"""
+from time import time
+from get_loginserver_record import get_loginserver_record
 
-    url = "http://cs302.kiwi.land/api/ping"
+def add_privatedata (username,password,private_data):
+    """Use this API to save symmetrically encrypted private data for a given user. It will
+        automatically delete previously uploaded private data.
+        
+        TODO
+        --NEED TO IMPLEMENT ENCRYPTION FOR PRIVATE DATA--
+        """
+
+    url = "http://cs302.kiwi.land/api/add_privatedata"
+
     credentials = ('%s:%s' % (username, password))
     b64_credentials = base64.b64encode(credentials.encode('ascii'))
     headers = {
@@ -19,23 +28,22 @@ def ping (username,password):
     private_key_hex_bytes = storekey.return_private_key()
 
 
-
     # Uses the stored signing key hex bytes to reconstruct the key pair. 
     signing_key = nacl.signing.SigningKey(private_key_hex_bytes, encoder=nacl.encoding.HexEncoder)
-    # Getting the public key 
-    verify_key = signing_key.verify_key
-    # Convert to bytes, then decode to string
-    verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
-    # For ping the message is the public key string in bytes
-    message_bytes = bytes(verify_key_hex_str, encoding='utf-8')
-    # Sign the message, which is the public key
-    signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
-    signature_hex_str = signed.signature.decode('utf-8')
+        
+    loginserver_record_str = get_loginserver_record(username,password)
+    
+    client_saved_at = str(time())
 
+    signature_bytes = bytes( private_data + loginserver_record_str + client_saved_at,encoding='utf-8')
+    signature = signing_key.sign(signature_bytes,encoder=nacl.encoding.HexEncoder)
+    signature_hex_str = signature.signature.decode('utf-8')
 
     payload = {
-        "pubkey" : verify_key_hex_str,
-        "signature" : signature_hex_str,
+        "privatedata" : private_data,
+        "loginserver_record" : loginserver_record_str,
+        "client_saved_at" : client_saved_at,
+        "signature" : signature_hex_str
     }
     
     payload_str = json.dumps(payload)
@@ -57,4 +65,4 @@ def ping (username,password):
     return response_dict
 
 # test if ping works
-print(ping("mche226","MingChen91_1636027"))
+print(add_privatedata("mche226","MingChen91_1636027","attack at dawn"))

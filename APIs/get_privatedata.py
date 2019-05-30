@@ -1,11 +1,11 @@
 import urllib.request
 import json
 import base64
+import storekey
 
-
-def list_users(username,password):
-    """ Lists current active users from login server"""
-    url = "http://cs302.kiwi.land/api/list_users"
+def get_privatedata(username,password):
+    """ Use this API to load the saved symmetrically encrypted private data for a user. """
+    url = "http://cs302.kiwi.land/api/get_privatedata"
 
     headers = {
         'X-username': username,
@@ -26,4 +26,4 @@ def list_users(username,password):
     response_dict = json.loads(data.decode(encoding))
     return(response_dict)
 
-print(list_users("mche226","MingChen91_1636027"))
+print(get_privatedata("mche226","MingChen91_1636027"))

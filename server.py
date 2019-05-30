@@ -84,9 +84,9 @@ class MainApp(object):
 # Functions only after here
 ###
 
-def authorise_user_login(username, password):
+def authorise_user_login(username):
     """checks using ping against login server to see if credentials are valid"""
-    response = ping(username, password)
+    response = ping(username)
     if response['authentication'] == "basic":
         return 0
     else:

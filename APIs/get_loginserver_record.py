@@ -3,9 +3,11 @@ import json
 import base64
 
 
-def list_users(username,password):
-    """ Lists current active users from login server"""
-    url = "http://cs302.kiwi.land/api/list_users"
+def get_loginserver_record(username,password):
+    """ Use this API to load your current loginserver_record for use in creating
+    point-to-point messages. Change it by creating new pubkeys with /api/add_pubkey and/or by
+    changing the current pubkey in /api/report."""
+    url = "http://cs302.kiwi.land/api/get_loginserver_record"
 
     headers = {
         'X-username': username,
@@ -24,6 +26,6 @@ def list_users(username,password):
         exit()
 
     response_dict = json.loads(data.decode(encoding))
-    return(response_dict)
+    return(response_dict["loginserver_record"])
 
-print(list_users("mche226","MingChen91_1636027"))
+# print(get_loginserver_record("mche226","MingChen91_1636027"))
