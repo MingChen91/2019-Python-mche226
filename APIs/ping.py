@@ -3,7 +3,7 @@ import json
 import base64
 import nacl.encoding
 import nacl.signing
-import storekey
+from storekey import return_private_key
 def ping (username,password):
     """Calls the API ping and returns the response as a dictionary"""
 
@@ -16,7 +16,7 @@ def ping (username,password):
     }
     
     # reads the stored key and uses that
-    private_key_hex_bytes = storekey.return_private_key()
+    private_key_hex_bytes = return_private_key()
 
 
 

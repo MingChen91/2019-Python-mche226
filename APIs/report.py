@@ -13,7 +13,7 @@ def report(username,status = 'online'):
 
     headers = {
         'X-username': username,
-        'X-apikey': "5LlakWWMaXOfByBdOzFy",
+        'X-apikey': "BZ6SSVojyjeoKh3E6sdr",
         'Content-Type' : 'application/json; charset=utf-8',
     }
 
@@ -27,7 +27,7 @@ def report(username,status = 'online'):
 
     payload = {
         "connection_location": "2",
-        "connection_address": "127.0.0.1:8000",
+        "connection_address": "172.23.68.84",
         "incoming_pubkey" : verify_key_hex_str,
         "status" : status
     }

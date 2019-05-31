@@ -26,9 +26,22 @@ def load_api_key(username,password):
         exit()
 
     response_dict = json.loads(data.decode(encoding))
+    output_apikey_txt(response_dict['api_key'])
     return(response_dict)
 
 
-print(load_api_key("Mche226","MingChen91_1636027"))
+def output_apikey_txt(apikey):
+    file = open("api_keys.txt", "w+")
+    file.write(apikey)
+    file.close()    
+
+def read_apikey_txt():
+    file = open("api_keys.txt","r")
+    file_lines = file.readline()
+    file.close()    
+    return (file_lines)
+
+# load_api_key("Mche226","MingChen91_1636027")
+
 
 # 5LlakWWMaXOfByBdOzFy

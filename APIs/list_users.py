@@ -1,15 +1,16 @@
 import urllib.request
 import json
 import base64
-
+from api_key import read_apikey_txt
 
 def list_users(username,password):
     """ Lists current active users from login server"""
     url = "http://cs302.kiwi.land/api/list_users"
+    api_key = read_apikey_txt()
 
     headers = {
         'X-username': username,
-        'X-apikey': "5LlakWWMaXOfByBdOzFy",
+        'X-apikey': api_key,
         'Content-Type' : 'application/json; charset=utf-8',
     }
 

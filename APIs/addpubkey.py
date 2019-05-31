@@ -3,6 +3,7 @@ import json
 import nacl.encoding
 import nacl.signing
 import storekey
+from api_key import read_apikey_txt
 
 
 def add_pubkey(username):
@@ -11,10 +12,10 @@ def add_pubkey(username):
 
     url = "http://cs302.kiwi.land/api/add_pubkey"
     private_key_hex_bytes = storekey.return_private_key()
-
+    api_key = read_apikey_txt()
     headers = {
         'X-username': username,
-        'X-apikey': "5LlakWWMaXOfByBdOzFy",
+        'X-apikey': api_key,
         'Content-Type' : 'application/json; charset=utf-8',
     }
 

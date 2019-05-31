@@ -1,6 +1,7 @@
 import urllib.request
 import json
 import base64
+from api_key import read_apikey_txt
 
 
 def get_loginserver_record(username,password):
@@ -8,10 +9,11 @@ def get_loginserver_record(username,password):
     point-to-point messages. Change it by creating new pubkeys with /api/add_pubkey and/or by
     changing the current pubkey in /api/report."""
     url = "http://cs302.kiwi.land/api/get_loginserver_record"
+    api_key = read_apikey_txt()
 
     headers = {
         'X-username': username,
-        'X-apikey': "5LlakWWMaXOfByBdOzFy",
+        'X-apikey': api_key,
         'Content-Type' : 'application/json; charset=utf-8',
     }
 
