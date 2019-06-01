@@ -101,7 +101,7 @@ def add_privatedata (username):
     private_key_hex_str = key_manager.return_private_key().decode('utf-8')
     blocked_pubkeys= []
     blocked_usernames= []
-    blocked_words= []
+    blocked_words= ["penis","dickhead"]
     favourite_message_signature= []
     friends_usernames= []
 
@@ -149,4 +149,31 @@ def add_privatedata (username):
     response_dict = json.loads(data.decode(encoding))
     return response_dict
 
-print(add_privatedata("Mche226"))
+
+def get_privatedata(username):
+    """ Use this API to load the saved symmetrically encrypted private data for a user. """
+    url = "http://cs302.kiwi.land/api/get_privatedata"
+    api_key = key_manager.return_apikey()
+
+    headers = {
+        'X-username': username,
+        'X-apikey': api_key,
+        'Content-Type' : 'application/json; charset=utf-8',
+    }
+
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        response = urllib.request.urlopen(req)
+        data = response.read() # read the received bytes
+        encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
+        response.close()
+    except urllib.error.HTTPError as error:
+        print("Error from get_privatedata")
+        print(error.read())
+        exit()
+
+    response_dict = json.loads(data.decode(encoding))
+    return(response_dict)
+
+add_privatedata("Mche226")
+print(get_privatedata("Mche226"))
