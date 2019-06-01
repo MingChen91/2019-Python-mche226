@@ -2,7 +2,9 @@ import cherrypy
 import urllib.request
 import json
 import base64
-from APIs.ping import ping 
+import server_api
+import client_api
+
 
 startHTML = "<html><head><title>CS302 example</title><link rel='stylesheet' href='/static/example.css' /></head><body>"
 
@@ -33,6 +35,11 @@ class MainApp(object):
         try:
             Page += "Hello " + cherrypy.session['username'] + "!<br/>"
             Page += "F is for friends to do stuff together, U is for U n ME, N is for NEwhere! <a href='/signout'>Sign out</a>"
+
+            Page += '<form action="/broadcast" method="post" enctype="multipart/form-data">'
+            Page += 'Message: <input type="text" name="message"/><br/>'
+            Page += '<input type="submit" value="send to hammond!"/></form>'
+
         except KeyError: #There is no username
             Page += "Click here to <a href='login'>login</a>."
         return Page
@@ -46,16 +53,9 @@ class MainApp(object):
 
         Page += '<form action="/signin" method="post" enctype="multipart/form-data">'
         Page += 'Username: <input type="text" name="username"/><br/>'
-        Page += 'Password: <input type="password" name="password"/>'
+        Page += 'Password: <input type="text" name="password"/>'
         Page += '<input type="submit" value="Login"/></form>'
         return Page
-
-
-    @cherrypy.expose
-    def sum(self, a=0, b=0): #All inputs are strings by default
-        output = int(a)+int(b)
-        return str(output)
-
 
     # LOGGING IN AND OUT
     @cherrypy.expose
@@ -79,15 +79,43 @@ class MainApp(object):
             cherrypy.lib.sessions.expire()
         raise cherrypy.HTTPRedirect('/')
 
+    @cherrypy.expose
+    def broadcast(self, message=None):
+        """Check their name and password and send them either to the main page, or back to the main login screen."""
+        error = client_api.broadcast(cherrypy.session.get('username'),message)
+        if error == 0:
+            raise cherrypy.HTTPRedirect('/')
+        else:
+            raise cherrypy.HTTPRedirect('/login?bad_attempt=1')
 
+
+class ApiCollection(object):
+    """ Collection of API endpoint"""
+    # CherryPy Configuration
+    _cp_config = {
+                    'tools.encode.on': True, 
+                    'tools.encode.encoding': 'utf-8',
+                    'tools.sessions.on': 'True',
+                 }
+    
+    @cherrypy.expose
+    def rx_broadcast(self):
+        incoming_data = json.loads(cherrypy.request.body.read().decode('utf-8'))
+        print(incoming_data)
+        response= {
+            "response": "ok"
+        }
+        json_data_str = json.dumps(response)
+        return json_data_str
 ###
 # Functions only after here
 ###
 
-def authorise_user_login(username):
+def authorise_user_login(username,password):
     """checks using ping against login server to see if credentials are valid"""
-    response = ping(username)
-    if response['authentication'] == "basic":
+    response = server_api.load_api_key(username,password)
+    if response == True:
         return 0
     else:
         return 1
+

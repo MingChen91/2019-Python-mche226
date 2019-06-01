@@ -2,8 +2,8 @@ import urllib.request
 import json
 import nacl.encoding
 import nacl.signing
-import storekey
-
+import key_manager
+ 
 def report(username,status = 'online'):
     """ Informs login server about connection information. 
     Call this at least once every 5 minutes and at most once
@@ -17,7 +17,7 @@ def report(username,status = 'online'):
         'Content-Type' : 'application/json; charset=utf-8',
     }
 
-    private_key_hex = storekey.return_private_key()
+    private_key_hex = key_manager.return_private_key()
     
     # Generate a new random signing key / private key generation and converting to json format
     signing_key = nacl.signing.SigningKey(private_key_hex, encoder=nacl.encoding.HexEncoder)

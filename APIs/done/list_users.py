@@ -27,4 +27,3 @@ def list_users(username,password):
     response_dict = json.loads(data.decode(encoding))
     return(response_dict)
 
-print(list_users("mche226","MingChen91_1636027"))

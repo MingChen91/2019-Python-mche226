@@ -27,11 +27,15 @@ def load_api_key(username,password):
     except urllib.error.HTTPError as error:
         print("Error from load_api_keys.")
         print(error.read())
-        exit()
+        return False
 
     response_dict = json.loads(data.decode(encoding))
     key_manager.write_apikey(response_dict['api_key'])
-    return(response_dict)
+    # print(response_dict)
+    if response_dict['response'] == 'ok':
+        return True
+    else:
+        return False
 
 
 def loginserver_pubkey():
@@ -175,5 +179,164 @@ def get_privatedata(username):
     response_dict = json.loads(data.decode(encoding))
     return(response_dict)
 
-add_privatedata("Mche226")
-print(get_privatedata("Mche226"))
+
+def report(username,status = 'online'):
+    """ Informs login server about connection information. 
+    Call this at least once every 5 minutes and at most once
+    every 30 seconds. Optional status 'online, 'away', 'busy', 'offline'"""
+
+    url = "http://cs302.kiwi.land/api/report"
+    api_key = key_manager.return_apikey()
+    headers = {
+        'X-username': username,
+        'X-apikey': api_key,
+        'Content-Type' : 'application/json; charset=utf-8',
+    }
+
+    private_key_hex = key_manager.return_private_key()
+    
+    # Grab the private key
+    signing_key = nacl.signing.SigningKey(private_key_hex, encoder=nacl.encoding.HexEncoder)
+    # Get the verify key from that
+    verify_key = signing_key.verify_key
+    verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
+
+    # Connection Address 
+    connection_address = get_ip()
+    # listening port hard coded atm. TODO grab this from cherrypy server later
+    listening_port = ":1234"
+    # Conection_location TODO DO I NEED TO CHANGE THIS DYNAMICALLY?
+    connection_location = "2'"
+    payload = {
+        "connection_location": connection_location,
+        "connection_address": connection_address+listening_port,
+        "incoming_pubkey" : verify_key_hex_str,
+        "status" : status
+    }
+
+    payload_str = json.dumps(payload)
+    payload_data = payload_str.encode('utf-8')
+
+    try:
+        req = urllib.request.Request(url, data=payload_data, headers=headers)
+        response = urllib.request.urlopen(req)
+        data = response.read() # read the received bytes
+        encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
+        response.close()
+    except urllib.error.HTTPError as error:
+        print("Error in report")
+        print(error.read())
+        exit()
+
+    response_dict = json.loads(data.decode(encoding))
+    return(response_dict)
+
+
+def add_pubkey(username):
+    """Associate a public key with your account. This key pair is used for signing
+    returns the response as a dict"""
+
+    url = "http://cs302.kiwi.land/api/add_pubkey"
+    
+    # generate new keypair
+    # new_key = nacl.signing.SigningKey.generate()
+    # use existing keypair 
+    private_key_hex_bytes = key_manager.return_private_key()
+    api_key = key_manager.return_apikey()
+    headers = {
+        'X-username': username,
+        'X-apikey': api_key,
+        'Content-Type' : 'application/json; charset=utf-8',
+    }
+
+    # Uses the stored signing key hex bytes to reconstruct the key pair. 
+    signing_key = nacl.signing.SigningKey(private_key_hex_bytes, encoder=nacl.encoding.HexEncoder)
+    # Getting the public key
+    verify_key = signing_key.verify_key
+    # Convert to bytes, then decode to string
+    verify_key_hex_str = verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
+    # Message is verify key + username
+    message_bytes = bytes(verify_key_hex_str + username, encoding='utf-8')
+    # Sign the message, which is the public + name
+    signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+    signature_hex_str = signed.signature.decode('utf-8')
+
+    payload = {
+        "pubkey": verify_key_hex_str,
+        "username": username,
+        "signature": signature_hex_str,
+    }
+
+    payload_str = json.dumps(payload)
+    payload_data = payload_str.encode('utf-8')
+
+    try:
+        # report
+        req = urllib.request.Request(url, data=payload_data, headers=headers)
+        response = urllib.request.urlopen(req)
+        data = response.read()  # read the received bytes
+        # load encoding if possible (default to utf-8)
+        encoding = response.info().get_content_charset('utf-8')
+        response.close()
+
+    except urllib.error.HTTPError as error:
+        print("Error in add pubkey")
+        print(error.read())
+        exit()
+
+    response_dict = json.loads(data.decode(encoding))
+    return response_dict
+
+
+def check_pubkey(username, verify_key_hex_str = "b9eba910b59549774d55d3ce49a7b4d46ab5e225cdcf2ac388cf356b5928b6bc"):
+    """ Use this API to load the loginserver record for a given public key. \n 
+    TODO get rid of default verifykey"""
+    # Authentication
+    api_key = key_manager.return_apikey()
+    headers = {
+        'X-username': username,
+        'X-apikey': api_key,
+        'Content-Type' : 'application/json; charset=utf-8',
+    }
+
+    url = "http://cs302.kiwi.land/api/check_pubkey?pubkey=" + verify_key_hex_str
+
+    try:
+        # report
+        req = urllib.request.Request(url, headers=headers)
+        response = urllib.request.urlopen(req)
+        data = response.read() # read the received bytes
+        encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
+        response.close()
+        
+    except urllib.error.HTTPError as error:
+        print(error.read())
+        exit()
+
+    response_dict = json.loads(data.decode(encoding))
+    return(response_dict)
+
+
+def list_users(username):
+    """ Lists current active users from login server"""
+    url = "http://cs302.kiwi.land/api/list_users"
+    api_key = key_manager.return_apikey()
+
+    headers = {
+        'X-username': username,
+        'X-apikey': api_key,
+        'Content-Type' : 'application/json; charset=utf-8',
+    }
+
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        response = urllib.request.urlopen(req)
+        data = response.read() # read the received bytes
+        encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
+        response.close()
+    except urllib.error.HTTPError as error:
+        print(error.read())
+        exit()
+
+    response_dict = json.loads(data.decode(encoding))
+    return(response_dict)

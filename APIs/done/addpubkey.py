@@ -55,6 +55,3 @@ def add_pubkey(username):
 
     response_dict = json.loads(data.decode(encoding))
     return response_dict
-
-
-add_pubkey("mche226")
