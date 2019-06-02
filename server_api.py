@@ -258,8 +258,8 @@ def add_pubkey(username):
     # Message is verify key + username
     message_bytes = bytes(verify_key_hex_str + username, encoding='utf-8')
     # Sign the message, which is the public + name
-    signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
-    signature_hex_str = signed.signature.decode('utf-8')
+    signature = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+    signature_hex_str = signature.signature.decode('utf-8')
 
     payload = {
         "pubkey": verify_key_hex_str,
@@ -360,17 +360,16 @@ def ping (username):
     signing_key = nacl.signing.SigningKey(private_key_hex_bytes, encoder=nacl.encoding.HexEncoder)
     # Getting the public key 
     verify_key = signing_key.verify_key
-    # Convert to bytes, then decode to string
-    verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
-    # For ping the message is the public key string in bytes
-    message_bytes = bytes(verify_key_hex_str, encoding='utf-8')
+    verify_key_hex_bytes = verify_key.encode(nacl.encoding.HexEncoder)
+    verify_key_hex_str =  verify_key_hex_bytes.decode('utf-8')
+
     # Sign the message, which is the public key
-    signed = signing_key.sign(message_bytes, encoder=nacl.encoding.HexEncoder)
+    signed = signing_key.sign(verify_key_hex_bytes, encoder=nacl.encoding.HexEncoder)
     signature_hex_str = signed.signature.decode('utf-8')
 
 
     payload = {
-        "pubkey" : verify_key_hex_str,
+        "pubkey" :verify_key_hex_str ,
         "signature" : signature_hex_str,
     }
     
