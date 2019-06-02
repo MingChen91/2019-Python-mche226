@@ -6,7 +6,12 @@ import server_api
 import client_api
 
 
-startHTML = "<html><head><title>CS302 example</title><link rel='stylesheet' href='/static/example.css' /></head><body>"
+startHTML = """ <html>
+                    <head>
+                        <title>CS302 example</title>
+                        <link rel='stylesheet' href='/static/example.css' />
+                    </head>
+                    <body>"""
 
 class MainApp(object):
 
@@ -17,8 +22,8 @@ class MainApp(object):
                     'tools.sessions.on': 'True',
                  }
 
-
-	# If they try somewhere we don't know, catch it here and send them to the right place.
+    
+    # If they try somewhere we don't know, catch it here and send them to the right place.
     @cherrypy.expose
     def default(self, *args, **kwargs):
         """The default page, given when we don't recognise where the request is for."""
@@ -64,8 +69,10 @@ class MainApp(object):
         error = authorise_user_login(username, password)
         if error == 0:
             cherrypy.session['username'] = username
+            cherrypy.log("Successful Authentication")
             raise cherrypy.HTTPRedirect('/')
         else:
+            cherrypy.log("Authentication error.")
             raise cherrypy.HTTPRedirect('/login?bad_attempt=1')
 
 
@@ -99,18 +106,30 @@ class ApiCollection(object):
                  }
     
     @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
     def rx_broadcast(self):
-        incoming_data = json.loads(cherrypy.request.body.read().decode('utf-8'))
+        # incoming_data = json.loads(cherrypy.request.body.read().decode('utf-8'))
+        incoming_data =cherrypy.request.json
         print(incoming_data)
         response= {
             "response": "ok"
         }
         json_data_str = json.dumps(response)
         return json_data_str
+
+    def check_existing_key(self,username):
+        """ Checks if there's an existing key pair for this user, returns True or False"""
+        response = server_api.get_privatedata(username)
+        print (response)
+
+# testing functions as i go along
+test = ApiCollection()
+test.check_existing_key("mche226")
+
 ###
 # Functions only after here
 ###
-
 def authorise_user_login(username,password):
     """checks using ping against login server to see if credentials are valid"""
     response = server_api.load_api_key(username,password)
@@ -118,4 +137,5 @@ def authorise_user_login(username,password):
         return 0
     else:
         return 1
+
 

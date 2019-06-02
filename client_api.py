@@ -10,11 +10,11 @@ import helper_modules
 def broadcast(username,message = "Default Message"):
     """ Use this api to transmit a signed broadcast between users. """
 
-    url = "http://cs302.kiwi.land/api/rx_broadcast"
-    # url = "http://172.23.35.53:1234/api/rx_broadcast"
+    # url = "http://cs302.kiwi.land/api/rx_broadcast"
+    url = "http://172.23.35.53:1234/api/rx_broadcast"
     api_key = key_manager.return_apikey()
 
-    # Authentication TODO get responding apikey for each user.
+    # Authentication TODO get responding apikey for each user.0
     headers = {
         'X-username': username,
         'X-apikey': api_key,
@@ -128,4 +128,3 @@ def privatemessage (username,target_username,message):
     
     response_dict = json.loads(data.decode(encoding))
     return (response_dict)
-

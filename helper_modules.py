@@ -18,7 +18,7 @@ def get_pubkey(user_list_dict,target_username):
 
     user_list = user_list_dict['users']
     for users in user_list:
-        if users['username'] == target_username:
+        if users['username'] == target_username: 
             return users['incoming_pubkey']
     print("GET PUBKEY CAN'T FIND USER")
     return None
@@ -34,4 +34,3 @@ def get_connection_address(user_list_dict,target_username):
             return users['connection_address']
     print("GET CONNECTION ADDRESS CAN'T FIND USER")
     return None
-
