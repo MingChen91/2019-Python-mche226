@@ -5,13 +5,13 @@ import base64
 import server_api
 import client_api
 
-
 startHTML = """ <html>
                     <head>
                         <title>CS302 example</title>
                         <link rel='stylesheet' href='/static/example.css' />
                     </head>
                     <body>"""
+
 
 class MainApp(object):
 
