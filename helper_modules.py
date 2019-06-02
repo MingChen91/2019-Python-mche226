@@ -2,8 +2,8 @@
 import urllib.request
 
 def get_ip():
-    """ Returns external IP by getting it from ident.me """
-    # if identme is down, use the commented code. which only works sometimes
+    """ Returns public IP by getting it from ident.me """
+    # if identme is down, use the commented code. which only gets local IP. sometimes different to public ip
     external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
     return external_ip
 
