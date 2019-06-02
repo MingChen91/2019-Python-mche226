@@ -112,6 +112,7 @@ class ApiCollection(object):
         # incoming_data = json.loads(cherrypy.request.body.read().decode('utf-8'))
         incoming_data =cherrypy.request.json
         print(incoming_data)
+        
         response= {
             "response": "ok"
         }
@@ -120,8 +121,15 @@ class ApiCollection(object):
 
     def check_existing_key(self,username):
         """ Checks if there's an existing key pair for this user, returns True or False"""
+        # Select the prikeys 
         response = server_api.get_privatedata(username)
-        print (response)
+        # privatedata_dict = json.loads(response['privatedata'])
+        print(response['private'])
+        # print (type(privatedata_dict['prikeys']))
+        # print (response['privatedata'])
+        # print (type(privatedata_dict))
+
+
 
 # testing functions as i go along
 test = ApiCollection()

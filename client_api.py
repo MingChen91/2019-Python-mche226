@@ -11,7 +11,7 @@ def broadcast(username,message = "Default Message"):
     """ Use this api to transmit a signed broadcast between users. """
 
     # url = "http://cs302.kiwi.land/api/rx_broadcast"
-    url = "http://172.23.35.53:1234/api/rx_broadcast"
+    url = "http://172.23.114.169:1234/api/rx_broadcast"
     api_key = key_manager.return_apikey()
 
     # Authentication TODO get responding apikey for each user.0
@@ -66,7 +66,7 @@ def broadcast(username,message = "Default Message"):
     response_dict = json.loads(data.decode(encoding))
     return(response_dict)
 
-
+print(broadcast("mche226","hello"))
 def privatemessage (username,target_username,message):
     """ Use this API to transmit a secret message between users. 
     'Meta' information is public, the message itself is private """
