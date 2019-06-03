@@ -132,8 +132,8 @@ class ApiCollection(object):
 
 
 # testing functions as i go along
-test = ApiCollection()
-test.check_existing_key("mche226")
+# test = ApiCollection()
+# test.check_existing_key("mche226")
 
 ###
 # Functions only after here

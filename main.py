@@ -64,9 +64,9 @@ def runMainApp():
     #cherrypy.tools.auth = cherrypy.Tool('before_handler', auth.check_auth, 99)config
 
     print("========================================")
-    print("             Ming Pearce")
-    print("         University of Auckland")
-    print("   COMPSYS302 - Example client web app")
+    print("             Ming Chen                  ")
+    print("         University of Auckland         ")
+    print("   COMPSYS302 - Example client web app  ")
     print("========================================")                       
     
     # Start the web server

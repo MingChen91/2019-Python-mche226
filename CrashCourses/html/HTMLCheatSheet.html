@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> HTML Cheat Sheet</title>
+    </head>
+    <body>
+        <!-- Headings -->
+        <h1 title = "My Company">Heading One</h1>
+        <a href="blog.html"> Go To blog</a>
+
+        <h2>Heading Two</h2>
+        <h3>Heading Three</h3>
+        <h4>Heading Four</h4>
+        <h5>Heading Five</h5>
+        <h6>Heading Six</h6>
+        <!-- Paragraphs -->
+        <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+            Repudiandae ullam <strong>possimus corporis fugiat molestias enim suscipit,<br> </strong> 
+            <em>necessitatibus sapiente dolorum in laudantium quia? Excepturi odit saepe,</em>
+            explicabo deserunt quidem <a href ="http://www.google.com" target = "_blank" >reprehenderit distinctio!</a>
+        </p>
+        <!-- Lists -->
+            <!-- unordered list -->
+        <ul> 
+            <li> List Item 1</li>
+            <li> List Item 2</li>
+            <li> List Item 3</li>
+            <li> List Item 4</li>
+        </ul>
+            <!-- ordered list -->
+        <ol>
+            <li>List 1</li>
+            <li>List 2</li>
+            <li>List 3</li>
+            <li>List 4</li>
+        </ol>
+
+        <!-- Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+                <tr>
+                    <td>Ming Chen</td>
+                    <td>mingc.mingc@gmail.com</td>
+                    <td>27</td>
+                </tr>
+                <tr>
+                    <td>Jerry Chen</td>
+                    <td>JMCtrademe@gmail.co.nz</td>
+                    <td>19</td>
+                </tr>
+            <tbody></tbody>
+        </table>
+        <br><hr><br>
+
+        <!-- Forms -->
+        <form action="process.php" method ="POST">
+            <div>
+                <label>First Name</label>
+                <input type="text" name="firstName" placeholder="Enter First Name">
+            </div>
+            <div>
+                <label>Last Name</label>
+                <input type="text" name="lastName">
+            </div>
+            <br>
+            <div>
+                <label>Email</label>
+                <input type="email" name="email">
+            </div> 
+            <br>
+            <div>
+                <label for="">Message</label><br>
+                <textarea name="message" cols="20" rows="10"></textarea>
+            </div>
+            <br>
+            <div>
+                <label>Gender</label>
+                <select name="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Apache Attack Helicoptor">Attack Helicopter</option>
+                </select>
+            </div>
+            <br>
+            <input type="submit" name = "submit" value=" Submit">
+        </form>
+        
+        <!-- Button -->
+        <button>Click Me</button>
+        <br>
+        <!-- Image -->
+        <a href="Patrick.png">
+            <img src="Patrick.png" alt="Picture of Patrick" width="200">
+        </a>
+
+        <!-- Quotations -->
+        <blockquote cite="www.youtube.com">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsam, repudiandae! Assumenda officiis consequuntur officia, 
+            <br> dolorum sint facilis itaque vitae eveniet asperiores amet sapiente architecto quibusdam optio repellendus delectus facere earum?
+        </blockquote>
+
+        <p>The <abbr title="World Wide Web"> WWW </abbr> is awsome</p>
+        <p><cite>HTML crash course</cite> by Brad Traversy </p>
+        
+        <div style="margin-top: 700px"></div>
+    </body>
+</html>
