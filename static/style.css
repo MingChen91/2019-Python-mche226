@@ -37,7 +37,7 @@ body{
 }
 
 #navbar a:hover{
-	color:red;
+	color:#f64c72;
 }
 #navbar a:active{
     color:black;
@@ -45,6 +45,14 @@ body{
 #navbar a:visited{
 }
 
+/* buttons */
+.button{
+    background-color:rgb(3, 51, 149);
+    color:#fff;
+    margin-top: 1.2em;
+	padding:10px 15px;
+	border:none;
+}
 
 /* section */
 .section {

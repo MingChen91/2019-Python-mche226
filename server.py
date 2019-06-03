@@ -5,16 +5,9 @@ import base64
 import server_api
 import client_api
 
-startHTML = """ <html>
-                    <head>
-                        <title>CS302 example</title>
-                        <link rel='stylesheet' href='/static/example.css' />
-                    </head>
-                    <body>"""
-
-
 class MainApp(object):
-
+    """ Colletion of Main functions for Javascript to call"""
+    
     # CherryPy Configuration
     _cp_config = {
                     'tools.encode.on': True, 
@@ -27,40 +20,17 @@ class MainApp(object):
     @cherrypy.expose
     def default(self, *args, **kwargs):
         """The default page, given when we don't recognise where the request is for."""
-        Page = startHTML + "I don't know where you're trying to go, so have a 404 Error."
         cherrypy.response.status = 404
-        return Page
+        return "I DONT THINK YOU'RE SUPPOSED TO BE HERE AYE."
 
 
     # PAGES (which return HTML that can be viewed in browser)
     @cherrypy.expose
     def index(self):
-        Page = startHTML + "Welcome! This is a test website for COMPSYS302!<br/>"
+        """serves index.html
+        TODO error catching"""
+        return open("./index.html","r").read()
 
-        try:
-            Page += "Hello " + cherrypy.session['username'] + "!<br/>"
-            Page += "F is for friends to do stuff together, U is for U n ME, N is for NEwhere! <a href='/signout'>Sign out</a>"
-
-            Page += '<form action="/broadcast" method="post" enctype="multipart/form-data">'
-            Page += 'Message: <input type="text" name="message"/><br/>'
-            Page += '<input type="submit" value="send to hammond!"/></form>'
-
-        except KeyError: #There is no username
-            Page += "Click here to <a href='login'>login</a>."
-        return Page
-
-
-    @cherrypy.expose
-    def login(self, bad_attempt = 0):
-        Page = startHTML 
-        if bad_attempt != 0:
-            Page += "<font color='red'>Invalid username/password!</font>"
-
-        Page += '<form action="/signin" method="post" enctype="multipart/form-data">'
-        Page += 'Username: <input type="text" name="username"/><br/>'
-        Page += 'Password: <input type="text" name="password"/>'
-        Page += '<input type="submit" value="Login"/></form>'
-        return Page
 
     # LOGGING IN AND OUT
     @cherrypy.expose
@@ -96,6 +66,21 @@ class MainApp(object):
             raise cherrypy.HTTPRedirect('/login?bad_attempt=1')
 
 
+###
+# Interal Functions
+###
+def authorise_user_login(username,password):
+    """checks using ping against login server to see if credentials are valid"""
+    response = server_api.load_api_key(username,password)
+    if response == True:
+        return 0
+    else:
+        return 1
+
+
+########################
+## External API calls ##
+########################
 class ApiCollection(object):
     """ Collection of API endpoint"""
     # CherryPy Configuration
@@ -128,22 +113,5 @@ class ApiCollection(object):
         # print (type(privatedata_dict['prikeys']))
         # print (response['privatedata'])
         # print (type(privatedata_dict))
-
-
-
-# testing functions as i go along
-# test = ApiCollection()
-# test.check_existing_key("mche226")
-
-###
-# Functions only after here
-###
-def authorise_user_login(username,password):
-    """checks using ping against login server to see if credentials are valid"""
-    response = server_api.load_api_key(username,password)
-    if response == True:
-        return 0
-    else:
-        return 1
 
 

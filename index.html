@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name = "Description" content = "CS302 client side webapp">
     <title>TweetieChat</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <link rel = "stylesheet" type = "text/css" href = "static/style.css">
 </head>
 <!-- BODY -->
@@ -25,6 +26,7 @@
                 <li><a href="#">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="https://github.com/uoa-cs302/2019-Python-mche226" target="_blank" >Github</a></li>
+                <li><a href="#">Sign Out</a></li>
             </ul>
         </div>
     </nav>
@@ -38,13 +40,13 @@
             </h1>
         </div>
       <!-- Forms -->
-        <form action="#">
+        <form id = login_details action="#">
             <div class = "container">
                 <label for="username"> Username:<br> </label>
-                <input type="text" name="username" placeholder = "Enter your username/UPI" autocomplete="off"><br>
+                <input type="text" id="username" placeholder = "Enter your username/UPI" autocomplete="off"><br>
                 <label for="password"> Password:<br></label>
-                <input type="password" name= "password" placeholder= "Enter your password" autocomplete="off"><br>
-                <input type="submit" name = "submit" value = "Login">
+                <input type="password" id= "password" placeholder= "Enter your password" autocomplete="off"><br>
+                <input class = "button" id="submit" type="submit" name = "submit" value = "Login">
             </div>
         </form>
     </section>
@@ -52,5 +54,6 @@
     <footer id="main-footer">
         <p>Copyright &copy; 2019 MCHE226</p>
     </footer>
+    <script src="index.js"></script>
 </body>
 </html>
