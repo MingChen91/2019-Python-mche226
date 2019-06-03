@@ -16,12 +16,12 @@ body{
 	font: normal 16px Arial, Helvetica, sans-serif;
 
 	line-height:1.6em;
-	margin:0;
+	margin:0; 
 }
-
+/* Links */
 a{
-	text-decoration: none;
-	color:#000;
+	text-decoration: none; /*gets rid of underline*/
+	color:#000; /*default color*/
 }
 
 a:hover{
