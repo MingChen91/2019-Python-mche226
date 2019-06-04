@@ -9,6 +9,8 @@ console.warn('This is a warning');
 
 // VARIABLES - var, let, const
 let age = 30;
+// var is globally scoped. try not to use.
+// always use const unless you know you need to reassign it
 
 // let can be re-assigned, const can not
 age = 31;
@@ -17,7 +19,7 @@ age = 31;
 // DATA TYPES - String, Number, Boolean, null, undefined
 const name = 'Brad';
 const age = 37;
-const rating = 3.5;
+const rating = 3.5; //no float or decimal. just number type
 const isCool = true;
 const x = null;
 const y = undefined;

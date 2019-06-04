@@ -9,6 +9,7 @@
     <title>TweetieChat</title>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <link rel = "stylesheet" type = "text/css" href = "static/style.css">
+    <link rel = "stylesheet" type = "text/css" href = "style.css">
 </head>
 <!-- BODY -->
 <body>
@@ -40,13 +41,14 @@
             </h1>
         </div>
       <!-- Forms -->
-        <form id = login_details action="#">
+        <form id = login_details>
             <div class = "container">
                 <label for="username"> Username:<br> </label>
                 <input type="text" id="username" placeholder = "Enter your username/UPI" autocomplete="off"><br>
                 <label for="password"> Password:<br></label>
                 <input type="password" id= "password" placeholder= "Enter your password" autocomplete="off"><br>
-                <input class = "button" id="submit" type="submit" name = "submit" value = "Login">
+                <button type="button" class="button" onclick="submit_click()" id = "submit" >Click Me!</button>
+                <!-- <input class = "button" id="submit" type="submit" name = "submit" value = "Login"> -->
             </div>
         </form>
     </section>
@@ -54,6 +56,6 @@
     <footer id="main-footer">
         <p>Copyright &copy; 2019 MCHE226</p>
     </footer>
-    <script src="index.js"></script>
+    <script src="static/index.js"></script>
 </body>
 </html>

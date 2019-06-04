@@ -4,8 +4,8 @@ import socket
 def get_ip():
     """ Returns public IP by getting it from ident.me """
     # if identme is down, use the commented code. which only gets local IP. sometimes different to public ip
-#     external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
-#     return external_ip
+    # external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    # return external_ip
 
     """ Returns the local IP"""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

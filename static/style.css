@@ -16,7 +16,7 @@ body{
 /* header */
 #main-header{
     background-color:#f64c72;
-    color:white;
+	color:white;
 }
 
 /* nav bar */
@@ -53,13 +53,19 @@ body{
 	padding:10px 15px;
 	border:none;
 }
-
+.button:hover{
+	color:#f64c72;
+}
+.button:active{	
+	color:black;
+}
 /* section */
 .section {
     text-align:center;
     background-image:url('Background.png');
-    background-position:center;
-    min-height: 700px;
+	background-position:center;
+	min-height: 300px;
+	height: 70vh;
 }
 
 /* footer */

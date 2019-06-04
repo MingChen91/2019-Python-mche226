@@ -29,7 +29,7 @@ class MainApp(object):
     def index(self):
         """serves index.html
         TODO error catching"""
-        return open("./index.html","r").read()
+        return open("./static/index.html","r").read()
 
 
     # LOGGING IN AND OUT
