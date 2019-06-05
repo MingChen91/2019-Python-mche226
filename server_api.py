@@ -37,7 +37,7 @@ def send_data(url, headers = None, data = None):
 def load_api_key(username,password):
     """ Gets new API key from server , used for this session. \n
     This needs to be done before creating the user object"""
-    url = "http://cs302.kiwi.land/api/load_new_api_key"
+    url = "http://cs302.kiwi.land/api/load_new_apikey"
 
     credentials = ('%s:%s' % (username, password))
     b64_credentials = base64.b64encode(credentials.encode('ascii'))
@@ -50,12 +50,13 @@ def load_api_key(username,password):
 
     # checks if the returned value is a proper response or indicate where the error has occured
     if isinstance(response,dict):
-        return(response['api_key'])
+        return response
     else:
         print("Error in load_api_key")
         return False
 
-# def decrypt_private_data (encypted_data)
+
+
 def loginserver_pubkey():
     """ Return the public key of the login server, which may be used to validate
         loginserver_records in broadcasts / private messages """
@@ -120,7 +121,7 @@ def add_privatedata (username,api_key,priv_password):
     # Signing key
     signing_key = nacl.signing.SigningKey(private_key_hex_str, encoder= nacl.encoding.HexEncoder)
     # Login server record
-    loginserver_record_str = get_loginserver_record()
+    loginserver_record_str = get_loginserver_record(username,api_key)
     # Time stamp
     client_saved_at = str(time())
     
@@ -164,7 +165,7 @@ def add_privatedata (username,api_key,priv_password):
         print("Error in add_privatedata")    
 
 
-def get_privatedata(usename,api_key,priv_password):
+def get_privatedata(username,api_key,priv_password):
     """ Use this API to load the saved symmetrically encrypted private data for a user. Enter private password """
     url = "http://cs302.kiwi.land/api/get_privatedata"
 

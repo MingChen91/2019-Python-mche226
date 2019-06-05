@@ -4,6 +4,9 @@ import json
 import base64
 import server_api
 import client_api
+import helper_modules
+
+redirect_html = '<!DOCTYPE html><html><head><meta http-equiv="Refresh" content="0; url=http://' + helper_modules.get_ip() + ':1234/"/></head></html>'
 
 class MainApp(object):
     """ Colletion of Main functions for Javascript to call"""
@@ -34,19 +37,29 @@ class MainApp(object):
     @cherrypy.expose
     def main(self):
         """serves the main html"""
-        return open("./static/main.html","r").read()
+        username = cherrypy.session.get('username')
+        if username is None:
+            # redirect to index page
+            return redirect_html
+        else:
+            return open("./static/main.html","r").read()
 
     # LOGGING IN AND OUT
     @cherrypy.expose
-    def signin(self, username=None, password=None):
-        """Check their name and password and send them either to the main page, or back to the main login screen."""
-        
-        # if error == 0:
-        #     cherrypy.session['username'] = username
-        #     cherrypy.log("Successful Authentication")
-
-        response = json.dumps({"response":"sok"})
-        return response
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def signin(self):
+        """ Checks incoming name and password, gives response if ok not not \n
+            If ok, store usename and apikey in session """
+        incoming_data =cherrypy.request.json
+        success = authorise_user_login(incoming_data['username'],incoming_data['password'])
+        if success != False:
+            cherrypy.session['username'] = incoming_data['username']
+            cherrypy.session['api_key'] = success['api_key']
+            cherrypy.log("Successful Authentication")
+            return json.dumps({"response":"ok"})
+        else:
+            return json.dumps({"response":" Couldn't authenticate"})
 
 
     @cherrypy.expose
@@ -54,10 +67,12 @@ class MainApp(object):
         """Logs the current user out, expires their session"""
         username = cherrypy.session.get('username')
         if username is None:
-            pass
+            cherrypy.log("Already logged out")
+            # pass
         else:
             cherrypy.lib.sessions.expire()
-        raise cherrypy.HTTPRedirect('/')
+            cherrypy.log("Logged out of session")
+        
 
     @cherrypy.expose
     def broadcast(self, message=None):
@@ -72,13 +87,15 @@ class MainApp(object):
 ###
 # Interal Functions
 ###
+#signing in ones
 def authorise_user_login(username,password):
     """checks using ping against login server to see if credentials are valid"""
     response = server_api.load_api_key(username,password)
-    if response == True:
-        return 0
+    print(response)
+    if response == False:
+        return False
     else:
-        return 1
+        return response
 
 
 ########################
@@ -100,7 +117,6 @@ class ApiCollection(object):
         # incoming_data = json.loads(cherrypy.request.body.read().decode('utf-8'))
         incoming_data =cherrypy.request.json
         print(incoming_data)
-        
         response= {
             "response": "ok"
         }

@@ -23,10 +23,10 @@
     <nav id = "navbar">
         <div class ="container"> 
             <ul>
-                <li><a href="#">Home</a></li>
+                <li><a href="/main">Home</a></li>
                 <li><a href="#">About</a></li>
                 <li><a href="https://github.com/uoa-cs302/2019-Python-mche226" target="_blank" >Github</a></li>
-                <li><a href="#">Sign Out</a></li>
+                <li><a href="#" onclick = "sign_out()"> Sign Out</a></li>
             </ul>
         </div>
     </nav>
@@ -46,8 +46,7 @@
                 <input type="text" id="username" placeholder = "Enter your username/UPI" autocomplete="off"><br>
                 <label for="password"> Password:<br></label>
                 <input type="password" id= "password" placeholder= "Enter your password" autocomplete="off"><br>
-                <button type="button" class="button" onclick="submit_click()" id = "submit" >Click Me!</button>
-                <!-- <input class = "button" id="submit" type="submit" name = "submit" value = "Login"> -->
+                <input type="submit" class="button" onclick="submit_click()" id = "submit" value = "submit">
             </div>
         </form>
     </section>
