@@ -1,5 +1,6 @@
 import socket
-# import urllib.request
+import urllib.request
+import json
 
 def get_ip():
     """ Returns public IP by getting it from ident.me """
@@ -19,6 +20,8 @@ def get_ip():
     return IP
 
 
+    
+
 def get_pubkey(user_list_dict,target_username):
     """ Find the public key for a given user name, using the current list users\n
     TODO better error handling"""
@@ -28,7 +31,7 @@ def get_pubkey(user_list_dict,target_username):
         if users['username'] == target_username: 
             return users['incoming_pubkey']
     print("GET PUBKEY CAN'T FIND USER")
-    return None
+    
 
 
 def get_connection_address(user_list_dict,target_username):
@@ -40,4 +43,4 @@ def get_connection_address(user_list_dict,target_username):
         if users['username'] == target_username:
             return users['connection_address']
     print("GET CONNECTION ADDRESS CAN'T FIND USER")
-    return None
+

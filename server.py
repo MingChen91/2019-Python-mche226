@@ -31,19 +31,22 @@ class MainApp(object):
         TODO error catching"""
         return open("./static/index.html","r").read()
 
+    @cherrypy.expose
+    def main(self):
+        """serves the main html"""
+        return open("./static/main.html","r").read()
 
     # LOGGING IN AND OUT
     @cherrypy.expose
     def signin(self, username=None, password=None):
         """Check their name and password and send them either to the main page, or back to the main login screen."""
-        error = authorise_user_login(username, password)
-        if error == 0:
-            cherrypy.session['username'] = username
-            cherrypy.log("Successful Authentication")
-            raise cherrypy.HTTPRedirect('/')
-        else:
-            cherrypy.log("Authentication error.")
-            raise cherrypy.HTTPRedirect('/login?bad_attempt=1')
+        
+        # if error == 0:
+        #     cherrypy.session['username'] = username
+        #     cherrypy.log("Successful Authentication")
+
+        response = json.dumps({"response":"sok"})
+        return response
 
 
     @cherrypy.expose
@@ -104,14 +107,11 @@ class ApiCollection(object):
         json_data_str = json.dumps(response)
         return json_data_str
 
-    def check_existing_key(self,username):
-        """ Checks if there's an existing key pair for this user, returns True or False"""
-        # Select the prikeys 
-        response = server_api.get_privatedata(username)
-        # privatedata_dict = json.loads(response['privatedata'])
-        print(response['private'])
-        # print (type(privatedata_dict['prikeys']))
-        # print (response['privatedata'])
-        # print (type(privatedata_dict))
+    def test(self):
+        print("hello")
+
+    #####
+    ## External Functions
+    #####
 
 
