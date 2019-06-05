@@ -1,10 +1,5 @@
-// $(document).ready(function(){
-//     $('#submit').on('click', function(){
-//         alert("Button Clicked!")
-//     });
-// });
 // change the ip if needed
-const ip = "http://192.168.1.75:1234";
+const ip = "http://192.168.1.76:1234";
 
 //submits the form details to server to get new API key and log in
 function submit_click(){
@@ -19,7 +14,7 @@ function submit_click(){
     }).done(function(data){
         let data_json = JSON.parse(data)
         if (data_json.response == "ok"){
-            window.location.href = "http://192.168.1.75:1234/main";
+            window.location.href = ip+"/main";
         } else {
             alert('Invalid username / password combo')
         }
@@ -33,7 +28,7 @@ function sign_out(){
         url: ip+'/signout',
     }).done(function(data){
         alert("Come back again soon =)")
-        window.location.href = "http://192.168.1.75:1234/"
+        window.location.href = ip
     });
     
 }
