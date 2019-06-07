@@ -1,20 +1,20 @@
-// change the ip if needed
-const ip = "http://192.168.1.76:1234";
-
 //submits the form details to server to get new API key and log in
 function submit_click(){
     let username = document.getElementById("username").value
     let password = document.getElementById("password").value
     let data = {'username' : username,'password' : password}
+    
     $.ajax({
         method: 'POST',
-        url: ip+'/signin',
+        url: '/signin',
         data : JSON.stringify(data),
         contentType:'application/json'
-    }).done(function(data){
-        let data_json = JSON.parse(data)
+    }).done(function(response){
+        console.log(response)
+        let data_json = JSON.parse(response)
         if (data_json.response == "ok"){
-            window.location.href = ip+"/main";
+            window.location.href = "/main";
+            // alert('success')
         } else {
             alert('Invalid username / password combo')
         }
@@ -25,8 +25,9 @@ function submit_click(){
 function sign_out(){
     $.ajax({
         method: 'GET',
-        url: ip+'/signout',
+        url:'/signout',
     }).done(function(data){
+        console.log(data)
         alert("Come back again soon =)")
         window.location.href = ip
     });

@@ -17,10 +17,11 @@ def get_ip():
         IP = '127.0.0.1'
     finally:
         s.close()
+    # print(IP)
     return IP
 
 
-    
+# print(get_ip())
 
 def get_pubkey(user_list_dict,target_username):
     """ Find the public key for a given user name, using the current list users\n

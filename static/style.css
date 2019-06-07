@@ -1,6 +1,6 @@
 
 body{
-	background-color:light;
+	background-color:white;
 	color:#99738E;
 	font-family:Arial, Helvetica, sans-serif;
     line-height:1.6em;
@@ -65,7 +65,7 @@ body{
     background-image:url('Background.png');
 	background-position:center;
 	min-height: 300px;
-	height: 70vh;
+	height: 75vh;
 }
 
 /* footer */

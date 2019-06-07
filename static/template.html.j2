@@ -24,22 +24,17 @@
         <div class ="container"> 
             <ul>
                 <li><a href="/main">Home</a></li>
-                <li><a href="/">About</a></li>
+                <li><a href="#">About</a></li>
                 <li><a href="https://github.com/uoa-cs302/2019-Python-mche226" target="_blank" >Github</a></li>
                 <li><a href="#" onclick = "sign_out()"> Sign Out</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- SECTION -->
-    <section class = "section">
-        <div class = "container">
-            <h1>
-                Nice <BR>
-                You've logged in.
-            </h1>
-        </div>
-    </section>
+    <!-- Section -->
+    {% block section %}
+
+    {% endblock %}
 
     <footer id="main-footer">
         <p>Copyright &copy; 2019 MCHE226</p>

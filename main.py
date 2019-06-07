@@ -16,7 +16,8 @@ import server
 import helper_modules
 
 # The address we listen for connections on
-LISTEN_IP = helper_modules.get_ip()
+
+LISTEN_IP =helper_modules.get_ip()
 LISTEN_PORT = 1234
 
 
@@ -41,7 +42,7 @@ def runMainApp():
             'tools.staticdir.on': True,
             'tools.staticdir.dir': 'static',
         },     
-        #once a favicon is set up, the following code could be used to select it for cherrypy
+        #once 121321321321321a favicon is set up, the following code could be used to select it for cherrypy
         #'/favicon.ico': {
         #    'tools.staticfile.on': True,
         #    'tools.staticfile.filename': os.getcwd() + '/static/favicon.ico',

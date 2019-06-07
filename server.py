@@ -5,8 +5,14 @@ import base64
 import server_api
 import client_api
 import helper_modules
+from jinja2 import Environment, FileSystemLoader
 
-redirect_html = '<!DOCTYPE html><html><head><meta http-equiv="Refresh" content="0; url=http://' + helper_modules.get_ip() + ':1234/"/></head></html>'
+# Jinja and pagesenviroment
+env = Environment(loader = FileSystemLoader('static'))
+index_page= env.get_template('index.html.j2')
+main_page= env.get_template('main.html.j2')
+
+
 
 class MainApp(object):
     """ Colletion of Main functions for Javascript to call"""
@@ -30,9 +36,12 @@ class MainApp(object):
     # PAGES (which return HTML that can be viewed in browser)
     @cherrypy.expose
     def index(self):
-        """serves index.html
-        TODO error catching"""
-        return open("./static/index.html","r").read()
+        return index_page.render()
+
+        # """serves i
+        # ndex.html
+        # TODO error catching"""
+        # return open("./static/index.html","r").read()
 
     @cherrypy.expose
     def main(self):
@@ -40,10 +49,11 @@ class MainApp(object):
         username = cherrypy.session.get('username')
         if username is None:
             # redirect to index page
-            return redirect_html
+            # return redirect_html
+            raise cherrypy.HTTPRedirect('/index')
         else:
-            return open("./static/main.html","r").read()
-
+            return main_page.render()
+            # look up 
     # LOGGING IN AND OUT
     @cherrypy.expose
     @cherrypy.tools.json_in()
@@ -59,12 +69,16 @@ class MainApp(object):
             cherrypy.log("Successful Authentication")
             return json.dumps({"response":"ok"})
         else:
+            cherrypy.log("Unsuccessful Authentication")
             return json.dumps({"response":" Couldn't authenticate"})
 
+    def listuser(self):
+        server_api.listuser(cherrypy.session.get[use])
 
     @cherrypy.expose
     def signout(self):
         """Logs the current user out, expires their session"""
+        print("signout_called")
         username = cherrypy.session.get('username')
         if username is None:
             cherrypy.log("Already logged out")
@@ -72,6 +86,8 @@ class MainApp(object):
         else:
             cherrypy.lib.sessions.expire()
             cherrypy.log("Logged out of session")
+            
+        
         
 
     @cherrypy.expose
@@ -91,7 +107,6 @@ class MainApp(object):
 def authorise_user_login(username,password):
     """checks using ping against login server to see if credentials are valid"""
     response = server_api.load_api_key(username,password)
-    print(response)
     if response == False:
         return False
     else:

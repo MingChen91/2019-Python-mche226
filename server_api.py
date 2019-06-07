@@ -16,6 +16,8 @@ def send_data(url, headers = None, data = None):
     try:
         if (headers == None):
             req = urllib.request.Request(url)
+        elif (data == None):
+            req = urllib.request.Request(url,headers=headers)   
         else:
             req = urllib.request.Request(url, data = data, headers=headers)
 
@@ -130,8 +132,8 @@ def add_privatedata (username,api_key,priv_password):
     priv_password_b = priv_password.encode('utf-8')
     # Obtaining the salt
     salt = (priv_password_b * 16)[0 : 16]
-    # Generate symetric key and use it for a secret box
-    priv_pass_key = nacl.pwhash.argon2id.kdf(32,priv_password_b,salt,8,536870912,encoder=nacl.encoding.HexEncoder)
+    # Generate symetric key and use it for a secret box6
+    priv_pass_key = nacl.pwhash.argon2i.kdf(32,priv_password_b,salt,8,536870912,encoder=nacl.encoding.HexEncoder)
     priv_box = nacl.secret.SecretBox(priv_pass_key, encoder = nacl.encoding.HexEncoder)
 
     #Encypting payload
@@ -184,13 +186,15 @@ def get_privatedata(username,api_key,priv_password):
             #use password to decrypt the box
             priv_password_b = priv_password.encode('utf-8')
             salt = (priv_password_b * 16)[0 : 16]
-            priv_pass_key = nacl.pwhash.argon2id.kdf(32,priv_password_b,salt,8,536870912,encoder=nacl.encoding.HexEncoder)
+            priv_pass_key = nacl.pwhash.argon2i.kdf(32,priv_password_b,salt,8,536870912,encoder=nacl.encoding.HexEncoder)
             priv_box = nacl.secret.SecretBox(priv_pass_key,encoder=nacl.encoding.HexEncoder)
             decrypted_private_data = priv_box.decrypt(encypted_private_data_bytes).decode('utf-8')
             return decrypted_private_data
+            # return encypted_private_data
         except  Exception as error:
             print (error)
             
+
 
 def report(username,api_key,status = 'online'):
     """ Informs login server about connection information. 
@@ -216,7 +220,7 @@ def report(username,api_key,status = 'online'):
     connection_address = helper_modules.get_ip()
     listening_port = ":1234"
     
-    connection_location = "2'"
+    connection_location = "1"
     payload = {
         "connection_location": connection_location,
         "connection_address": connection_address+listening_port,
@@ -303,11 +307,10 @@ def list_users(username,api_key):
     
     headers = {
         'X-username': username,
-        'X-api_key': api_key,
+        'X-apikey': api_key,
         'Content-Type' : 'application/json; charset=utf-8',
     }
-
-    response = send_data(url,headers)
+    response = send_data(url=url,headers=headers)
     if isinstance(response,dict):
         return response['users']
     else:
@@ -346,8 +349,19 @@ def ping (username,api_key):
     payload_str = json.dumps(payload)
     payload_data = payload_str.encode('utf-8')
 
-    response = send_data(url,headers,payload_data)
+    response = send_data(url=url,headers=headers,data=payload_data)
     if isinstance(response,dict):
         return response
     else:
         print("error in ping")
+
+# print(load_api_key("jalp521","rabadunk_544985022"))
+# print(load_api_key("Mche226","MingChen91_1636027"))
+# print(add_privatedata("mche226","JX8qTnTJNhxfwb80j4Lx","dognuts"))
+# print(get_privatedata("ntja862","7y2XeThOuBOC74y7JcU8","Face"))
+# print(get_privatedata("jalp521","1X6JYHI6yNNvSPTzAHrq","notaverysecurepassword"))
+# MingChen91_1636027 
+# print(report("mche226","KaQVyO6upgMIA1np3Ntb"))
+
+# print(ping("mche226","gWDjcnEIt3gwkKDXS2ac"))
+# print(list_users("mche226","gWDjcnEIt3gwkKDXS2ac"))
