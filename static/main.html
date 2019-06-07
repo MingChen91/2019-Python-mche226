@@ -1,0 +1,32 @@
+{% extends 'template.html' %}
+{% block section %}
+<!-- SECTION -->
+<section class = "section">
+    <div class = "container">
+        <h1>
+            Nice <BR>
+            You've logged in.
+        </h1>
+    </div>
+    <div id = "usersBar">
+        <p>hello</p>
+    </div>
+</section>
+
+<!-- <script>
+    // timed functions
+    setInterval(list_users, 1000);
+    
+    // list users function - lists the users also updates the database
+    function list_users(){
+        $.ajax({
+            method: 'GET',
+            url:'/list_users',
+        }).done(function(data){
+            console.log('list users called successfully ')
+            alert('1')
+        });
+}
+</script> -->
+{% endblock section %}
+

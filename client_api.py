@@ -5,7 +5,7 @@ import nacl.signing
 from time import time
 import key_manager
 import server_api
-import helper_modules
+import database
 
 def broadcast(username,message = "Default Message"):
     """ Use this api to transmit a signed broadcast between users. """
@@ -67,27 +67,23 @@ def broadcast(username,message = "Default Message"):
     return(response_dict)
 
 
-def privatemessage (username,target_username,message):
+def privatemessage (username,api_key,target_username,message,connection_address):
     """ Use this API to transmit a secret message between users. 
     'Meta' information is public, the message itself is private """
-    list = server_api.list_users(username)
-    # Target connection address
-    connection_address = helper_modules.get_connection_address(list,target_username)
+   
     # find targer pubkey
-     
-    target_pubkey_str = helper_modules.get_pubkey(list,target_username)
+    target_pubkey_str = database.get_target_pubkey(target_username)
     target_pubkey_bytes = bytes(target_pubkey_str,encoding='utf-8')
 
     url = "http://" + connection_address + "/api/rx_privatemessage"    
     
-    api_key = key_manager.return_apikey()
     headers = {
         'X-username': username,
         'X-apikey': api_key,
         'Content-Type' : 'application/json; charset=utf-8',
     }
     
-    login_server_record = server_api.get_loginserver_record(username)
+    login_server_record = server_api.get_loginserver_record(username,api_key)
 
     # Encryption of the message 
     message_b = bytes(message,encoding = 'utf-8')
@@ -96,12 +92,15 @@ def privatemessage (username,target_username,message):
     sealed_box = nacl.public.SealedBox(publickey)
     encrypted = sealed_box.encrypt(message_b, encoder = nacl.encoding.HexEncoder)
 
+
     sender_created_at = str(time())
-    #signing key 
+    #signing message
     private_key_hex_bytes = key_manager.return_private_key()
     signing_key = nacl.signing.SigningKey(private_key_hex_bytes,nacl.encoding.HexEncoder)
     signature_bytes = bytes(login_server_record+target_pubkey_str+target_username+ encrypted.decode('utf-8') +sender_created_at,encoding = 'utf-8')
     signature = signing_key.sign(signature_bytes,encoder=nacl.encoding.HexEncoder)
+    
+    
     payload = {
         "loginserver_record":login_server_record,
         "target_pubkey" : target_pubkey_str,
@@ -128,3 +127,5 @@ def privatemessage (username,target_username,message):
     
     response_dict = json.loads(data.decode(encoding))
     return (response_dict)
+
+privatemessage("mche226","BSnjWCHxtYwBBONOzZW2","mche226","fuckyou","172.23.84.163:1234")

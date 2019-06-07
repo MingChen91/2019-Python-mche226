@@ -89,6 +89,7 @@ def get_loginserver_record(username,api_key):
     else:
         print("Error in get_loginserver_record")
 
+# print(type(get_loginserver_record("mche226","BSnjWCHxtYwBBONOzZW2")))
 
 def add_privatedata (username,api_key,priv_password):
     """Use this API to save symmetrically encrypted private data for a given user. It will
@@ -354,14 +355,6 @@ def ping (username,api_key):
         return response
     else:
         print("error in ping")
-
 # print(load_api_key("jalp521","rabadunk_544985022"))
-# print(load_api_key("Mche226","MingChen91_1636027"))
-# print(add_privatedata("mche226","JX8qTnTJNhxfwb80j4Lx","dognuts"))
-# print(get_privatedata("ntja862","7y2XeThOuBOC74y7JcU8","Face"))
-# print(get_privatedata("jalp521","1X6JYHI6yNNvSPTzAHrq","notaverysecurepassword"))
-# MingChen91_1636027 
-# print(report("mche226","KaQVyO6upgMIA1np3Ntb"))
-
-# print(ping("mche226","gWDjcnEIt3gwkKDXS2ac"))
-# print(list_users("mche226","gWDjcnEIt3gwkKDXS2ac"))
+# print(get_privatedata("jalp521","yK5pSeTVxfkQ8ziDU05p","notaverysecurepassword"))
+print(report("mche226","BSnjWCHxtYwBBONOzZW2"))

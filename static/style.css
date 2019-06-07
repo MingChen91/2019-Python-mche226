@@ -76,3 +76,15 @@ body{
 	padding:20px;
 	margin-top:0px;
 }
+
+/* users aside bar */
+#usersBar{
+	float:right;
+	width:20%;
+	min-width: 200px;
+	height:100%;
+	background-color:rgb(225, 4, 4);
+	color:rgb(106, 29, 29);
+	
+	box-sizing: border-box;
+}
