@@ -5,6 +5,7 @@ import base64
 import server_api
 import database
 import helper_modules
+from time import time
 from jinja2 import Environment, FileSystemLoader
 
 # Jinja and pagesenviroment
@@ -93,35 +94,35 @@ class MainApp(object):
         username = cherrypy.session.get('username')
         if username is None:
             cherrypy.log("Already logged out")
-            # pass
+            
         else:
             cherrypy.lib.sessions.expire()
             cherrypy.log("Logged out of session")
+            
       
-
     ##
     # Listing users
     ##
     @cherrypy.expose
     def list_users(self):
-        """ Pulls list of users from Hammonds server, updates the database, then returns the data in a JSON"""
-        cherrypy.log("LIST USERS CALLED \n")
+        """ Calls refreshes all the status of other users"""
+        # Calls list users and adds their data to the database
+        # Ping check all of them to see who has an active and correct connection
+        # Returns the ones with active connections. 
+        pass
         # server_api.list_users(cherrypy.session.get('username'), cherrypy.session.get('api_key'))
 
 
     @cherrypy.expose
     def broadcast(self, message=None):
         """Check their name and password and send them either to the main page, or back to the main login screen."""
-        error = client_api.broadcast(cherrypy.session.get('username'),message)
-        if error == 0:
-            raise cherrypy.HTTPRedirect('/')
-        else:
-            raise cherrypy.HTTPRedirect('/login?bad_attempt=1')
+        pass
 
 
 ###
 # Interal Functions
 ###
+
 #signing in ones
 def authorise_user_login(username,password):
     """ Checks using ping against login server to see if credentials are valid\n
@@ -183,8 +184,20 @@ class ApiCollection(object):
         response= {
             "response": "ok"
         }
-        json_data_str = json.dumps(response)
-        return json_data_str
+        
+        return json.dumps(response)
+
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def ping_check(self):
+        """ Call this API to establish if a client is actually online and can conenct to them correctly"""
+        current_time = str(time())
+        response = {
+            'response':'ok',
+            'my_time':current_time
+        }
+        return json.dumps(response)
         
 
 #####

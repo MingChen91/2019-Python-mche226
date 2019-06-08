@@ -52,8 +52,7 @@ def update_accounts_data(username,api_key):
             add_accounts_data(username,pubkey,ip_address,connection_type,connection_updated_at,status)
     except TypeError as e:
         print(e)
-        
-update_accounts_data("mche226","BSnjWCHxtYwBBONOzZW2")
+
 
 def get_target_pubkey(target_username):
     """ Given a target user name, find their pubkey and ip address from the database \n
@@ -103,7 +102,3 @@ def decrypt_private_message(message,priv_key_hex):
     unseal_box = nacl.public.SealedBox(private_key)
     decrypted = unseal_box.decrypt(message_b,encoder= nacl.encoding.HexEncoder)
     return (decrypted.decode('utf-8'))
-    
-# print(decrypt_private_message('485fe5b339fbbf174b540a0987424e8bdaefa56768c0c7f83a9499eff592c3327434b850ff2b4d80382bccdafe94a57ee53a1b702aba77',return_private_key()))
-
-# get_sender_loginserver_record("mche226,b9eba910b59549774d55d3ce49a7b4d46ab5e225cdcf2ac388cf356b5928b6bc,1558396877.2960098,b607ecc6a4dc856d3c3b7cb2ccafbf718e3e5df971bb8ff65a15308f08b7f2eba168457ce912cac5556ab93b1a406b8fb142f84f55b46d3d51136ac39f49b908")

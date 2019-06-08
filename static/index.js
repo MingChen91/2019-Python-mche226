@@ -36,7 +36,7 @@ function sign_out(){
         url:'/signout',
     }).done(function(data){
         alert("Come back again soon =)")
-        window.location.href = ip
+        window.location.href = "/main";
     });
 }
 

@@ -8,10 +8,8 @@ import nacl.utils
 import nacl.secret
 from time import time
 import key_manager
-from helper_modules import get_ip,send_data
+from helper_modules import get_ip,send_data,get_port,get_connect_location
 
-
-        
     
 def load_api_key(username,password):
     """ Gets new API key from server , used for this session. \n
@@ -192,14 +190,15 @@ def report(username,api_key,status = 'online'):
     verify_key = signing_key.verify_key
     verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
 
-    # Connection Address TODO local ip vs public ip?
+    # Connection Address
     connection_address = get_ip()
-    listening_port = ":1234"
-    
-    connection_location = "1"
+    listening_port = str(get_port())
+    connection_location = str(get_connect_location())
+
+
     payload = {
         "connection_location": connection_location,
-        "connection_address": connection_address+listening_port,
+        "connection_address": connection_address+":"+listening_port,
         "incoming_pubkey" : verify_key_hex_str,
         "status" : status
     }
@@ -212,6 +211,7 @@ def report(username,api_key,status = 'online'):
         return response
     else: 
         print("Error in reporting")
+# print(report("mche226","95qBUbrKtccHqwsZjsBE"))
 
 
 def add_pubkey(username,api_key):
@@ -292,7 +292,7 @@ def list_users(username,api_key):
     else:
         print("Error in listing users")
 
-
+# print(list_users('mche226','95qBUbrKtccHqwsZjsBE'))
 def ping (username,api_key):
     """Calls the API ping and returns the response as a dictionary"""
 

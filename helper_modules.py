@@ -20,7 +20,15 @@ def get_ip():
     # print(IP)
     return IP
 
+def get_port():
+    """ Set your Listening port here"""
+    return 1234
 
+def get_connect_location():
+    """ Set your connection address here, 0 for uni ethernet, 1 for uni wireless, 2 for rest of the world"""
+    return 1
+
+    
 def send_data(url, headers = None, data = None):
     """ Module used to communicate with other APIs. """
     try:

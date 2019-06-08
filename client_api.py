@@ -4,7 +4,7 @@ import nacl.encoding
 import nacl.signing
 from time import time
 from server_api import get_loginserver_record
-from helper_modules import send_data
+from helper_modules import send_data,get_ip,get_port,get_connect_location
 import server_api
 import database
 
@@ -99,4 +99,30 @@ def tx_privatemessage (username,api_key,target_username,priv_key_hex_bytes,messa
     else: 
         print("Error in private message to " + target_username)
 
-# print(privatemessage("mche226","BSnjWCHxtYwBBONOzZW2","tche614",return_private_key(),"😁","172.23.61.246:1234"))
+
+def tx_ping_check(connection_address):
+    """ Use this to call other people's ping check to see if you can establish a valid connection \n
+        returns True or False depending on if connection is successful"""
+    url = "http://" + connection_address + "/api/ping_check"
+    headers = {
+        'Content-Type' : 'application/json; charset=utf-8',
+    }
+    # payload information
+    my_time = str(time())
+    connection_address = get_ip() +":"+ str(get_port())
+    connection_location = get_connect_location()
+
+    payload = {
+        "my_time" : my_time,
+        "connection_address":connection_address,
+        "my_active_usernames":"THIS IS OPTIONAL SO I'M NOT DOING IT",
+        "connection_location":connection_location
+    }
+    payload_data = json.dumps(payload).encode('utf-8')
+
+    response = send_data(url,headers = headers,data=payload_data)
+    print (response)
+
+
+tx_ping_check('172.24.15.67:1234')
+
