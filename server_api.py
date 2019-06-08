@@ -8,32 +8,9 @@ import nacl.utils
 import nacl.secret
 from time import time
 import key_manager
-import helper_modules
+from helper_modules import get_ip,send_data
 
 
-def send_data(url, headers = None, data = None):
-    """ Module used to communicate with other APIs. """
-    try:
-        if (headers == None):
-            req = urllib.request.Request(url)
-        elif (data == None):
-            req = urllib.request.Request(url,headers=headers)   
-        else:
-            req = urllib.request.Request(url, data = data, headers=headers)
-
-        response = urllib.request.urlopen(req)
-        data = response.read() # read the received bytes
-        encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
-        response.close()
-        return json.loads(data.decode(encoding))
-        
-    except urllib.error.HTTPError as error:
-        print(error.read())
-        return error
-    
-    except Exception as error:
-        print (error)
-        return error 
         
     
 def load_api_key(username,password):
@@ -56,7 +33,6 @@ def load_api_key(username,password):
     else:
         print("Error in load_api_key")
         return False
-
 
 
 def loginserver_pubkey():
@@ -89,7 +65,6 @@ def get_loginserver_record(username,api_key):
     else:
         print("Error in get_loginserver_record")
 
-# print(type(get_loginserver_record("mche226","BSnjWCHxtYwBBONOzZW2")))
 
 def add_privatedata (username,api_key,priv_password):
     """Use this API to save symmetrically encrypted private data for a given user. It will
@@ -190,11 +165,11 @@ def get_privatedata(username,api_key,priv_password):
             priv_pass_key = nacl.pwhash.argon2i.kdf(32,priv_password_b,salt,8,536870912,encoder=nacl.encoding.HexEncoder)
             priv_box = nacl.secret.SecretBox(priv_pass_key,encoder=nacl.encoding.HexEncoder)
             decrypted_private_data = priv_box.decrypt(encypted_private_data_bytes).decode('utf-8')
-            return decrypted_private_data
-            # return encypted_private_data
+            # Convert the str to a dictionary for ease of operation
+            decrypted_private_data_dict = json.loads(decrypted_private_data)
+            return decrypted_private_data_dict
         except  Exception as error:
             print (error)
-            
 
 
 def report(username,api_key,status = 'online'):
@@ -218,7 +193,7 @@ def report(username,api_key,status = 'online'):
     verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
 
     # Connection Address TODO local ip vs public ip?
-    connection_address = helper_modules.get_ip()
+    connection_address = get_ip()
     listening_port = ":1234"
     
     connection_location = "1"
@@ -280,7 +255,7 @@ def add_pubkey(username,api_key):
     if isinstance(response,dict):
         return response
     else:
-        print("error in adding pubkey")
+        print("Error in adding pubkey")
 
 
 def check_pubkey(username, api_key, verify_key_hex_str = "b9eba910b59549774d55d3ce49a7b4d46ab5e225cdcf2ac388cf356b5928b6bc"):
@@ -355,6 +330,3 @@ def ping (username,api_key):
         return response
     else:
         print("error in ping")
-# print(load_api_key("jalp521","rabadunk_544985022"))
-# print(get_privatedata("jalp521","yK5pSeTVxfkQ8ziDU05p","notaverysecurepassword"))
-print(report("mche226","BSnjWCHxtYwBBONOzZW2"))

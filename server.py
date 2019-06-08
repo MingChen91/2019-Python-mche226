@@ -60,18 +60,31 @@ class MainApp(object):
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def signin(self):
-        """ Checks incoming name and password, gives response if ok not not \n
-            If ok, store usename and apikey in session """
+        """ Checks incoming name and password, gives response if ok \n
+            If ok, store usename and apikey in session. \n
+            Then checks tries to get private data, can get, store privkey in session.\n
+            If not add new pubkey and store new private key in session. 
+            """
+        # Incoming request
         incoming_data =cherrypy.request.json
         success = authorise_user_login(incoming_data['username'],incoming_data['password'])
+        
+        # if successfully authorised load apikey and username in 
         if success != False:
-            cherrypy.session['username'] = incoming_data['username']
-            cherrypy.session['api_key'] = success['api_key']
-            cherrypy.log("Successful Authentication")
-            return json.dumps({"response":"ok"})
+            # tries to load their private data. 
+            private_data = load_private_data(incoming_data['username'],success['api_key'],incoming_data['priv_password'])
+
+            if private_data == True:
+                cherrypy.session['username'] = incoming_data['username']
+                cherrypy.session['api_key'] = success['api_key']
+                cherrypy.log("Authenticated and loaded private data")
+                return json.dumps({"response":"ok"})
+            else:
+                cherrypy.log("Authenticated but couldn't get private data")
+                return json.dumps({"response":"Can't load private data"})
         else:
             cherrypy.log("Unsuccessful Authentication")
-            return json.dumps({"response":" Couldn't authenticate"})
+            return json.dumps({"response":" Can't authenticate"})
 
 
     @cherrypy.expose
@@ -111,12 +124,27 @@ class MainApp(object):
 ###
 #signing in ones
 def authorise_user_login(username,password):
-    """checks using ping against login server to see if credentials are valid"""
+    """ Checks using ping against login server to see if credentials are valid\n
+        Returns the APIkey if is ok """
+
     response = server_api.load_api_key(username,password)
     if response == False:
         return False
     else:
         return response
+
+def load_private_data(username,api_key,priv_password):
+    """ Loads private data for user. If can't load private data for any reason create new private data for them"""
+    # attemps to load private data
+    private_data = server_api.get_privatedata(username,api_key,priv_password)
+    if private_data == None:
+        # Return false and tell them couldn't load private data properly
+        return False
+    else: 
+        # loads all the data into sessions
+        cherrypy.session['privkeys'] = private_data['prikeys']
+        return True
+
 
 
 ########################

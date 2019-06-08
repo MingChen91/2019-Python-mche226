@@ -5,21 +5,8 @@ import nacl.signing
 import nacl.public
 import nacl.utils
 import nacl.secret
-
 from key_manager import return_private_key
-def decrypt_private_message(message):
-    message_b= bytes(message,encoding = 'utf-8')
-    # get the private key string
-    priv_key_hex = return_private_key()
-    # Reconstruct key
-    signing_key = nacl.signing.SigningKey(priv_key_hex, encoder= nacl.encoding.HexEncoder)
-    private_key = signing_key.to_curve25519_private_key()
-    
-    unseal_box = nacl.public.SealedBox(private_key)
-    decrypted = unseal_box.decrypt(message_b,encoder= nacl.encoding.HexEncoder)
-    print (decrypted.decode('utf-8'))
-    
-decrypt_private_message('485fe5b339fbbf174b540a0987424e8bdaefa56768c0c7f83a9499eff592c3327434b850ff2b4d80382bccdafe94a57ee53a1b702aba77')
+
 
 ###
 # Accounts table
@@ -28,7 +15,7 @@ def add_accounts_data(username,pubkey,ip_address,connection_type,connection_upda
     """ Adds any new information to the accounts table in the database"""
     # make the connection to the database
     conn = sqlite3.connect('database.db')
-    # cursor
+    # cursor+
     c = conn.cursor()
     # checks if username exists
     c.execute("""SELECT username , pubkey, ip_address FROM Accounts WHERE username = ?""",[username])
@@ -82,7 +69,6 @@ def get_target_pubkey(target_username):
     conn.commit()
     # Close the connection
     conn.close()
-    print(type(pubkey[0]))
     return pubkey[0]
     
 
@@ -90,6 +76,7 @@ def get_target_pubkey(target_username):
 # Private Message Table
 ###
 def add_private_message(loginserver_record,target_pubkey,target_username,encrypted_message,sender_created_at,sender):
+    """ Adds the private message into the database"""
     pass
     
 
@@ -101,5 +88,22 @@ def get_sender_loginserver_record(loginserver_record):
     except Exception as e:
         print( "Loginserver Record format error. Unable to get sender")
         print (e)
+
+
+
+def decrypt_private_message(message,priv_key_hex):
+    """ Decryptes the private message using their private key"""
+    message_b= bytes(message,encoding = 'utf-8')
+    # get the private key string
+    # priv_key_hex = return_private_key()
+    # Reconstruct key
+    signing_key = nacl.signing.SigningKey(priv_key_hex, encoder= nacl.encoding.HexEncoder)
+    private_key = signing_key.to_curve25519_private_key()
+    
+    unseal_box = nacl.public.SealedBox(private_key)
+    decrypted = unseal_box.decrypt(message_b,encoder= nacl.encoding.HexEncoder)
+    return (decrypted.decode('utf-8'))
+    
+# print(decrypt_private_message('485fe5b339fbbf174b540a0987424e8bdaefa56768c0c7f83a9499eff592c3327434b850ff2b4d80382bccdafe94a57ee53a1b702aba77',return_private_key()))
 
 # get_sender_loginserver_record("mche226,b9eba910b59549774d55d3ce49a7b4d46ab5e225cdcf2ac388cf356b5928b6bc,1558396877.2960098,b607ecc6a4dc856d3c3b7cb2ccafbf718e3e5df971bb8ff65a15308f08b7f2eba168457ce912cac5556ab93b1a406b8fb142f84f55b46d3d51136ac39f49b908")

@@ -5,7 +5,8 @@
 function submit_click(){
     let username = document.getElementById("username").value
     let password = document.getElementById("password").value
-    let data = {'username' : username,'password' : password}
+    let priv_password= document.getElementById("priv_password").value
+    let data = {'username' : username,'password' : password,'priv_password' : priv_password}
     
     $.ajax({
         method: 'POST',
@@ -19,7 +20,11 @@ function submit_click(){
             window.location.href = "/main";
             // alert('success')
         } else {
-            alert('Invalid username / password combo')
+            if (data_json.response == "Can't load private data"){
+                alert("Couldn't load private data");
+            } else {
+                alert("Couldn't authenticate.");
+            }
         }
     });
 };

@@ -19,3 +19,28 @@ def get_ip():
         s.close()
     # print(IP)
     return IP
+
+
+def send_data(url, headers = None, data = None):
+    """ Module used to communicate with other APIs. """
+    try:
+        if (headers == None):
+            req = urllib.request.Request(url)
+        elif (data == None):
+            req = urllib.request.Request(url,headers=headers)   
+        else:
+            req = urllib.request.Request(url, data = data, headers=headers)
+
+        response = urllib.request.urlopen(req)
+        data = response.read() # read the received bytes
+        encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
+        response.close()
+        return json.loads(data.decode(encoding))
+        
+    except urllib.error.HTTPError as error:
+        print(error.read())
+        return error
+    
+    except Exception as error:
+        print (error)
+        return error 
