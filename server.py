@@ -75,6 +75,7 @@ class MainApp(object):
         if success != False:
             # tries to load their private data. 
             private_data = load_private_data(incoming_data['username'],success['api_key'],incoming_data['priv_password'])
+            
             if private_data == True:
                 cherrypy.session['username'] = incoming_data['username']
                 cherrypy.session['api_key'] = success['api_key']
@@ -95,7 +96,7 @@ class MainApp(object):
         if username is None:
             cherrypy.log("Already logged out")
         else:
-            server_api.report(cherrypy.session.get('username'),cherrypy.session.get('api_key'),cherrypy.session['privkeys'],'offline')
+            server_api.report(cherrypy.session.get('username'),cherrypy.session.get('api_key'),cherrypy.session.get('privkeys'),'offline')
             cherrypy.lib.sessions.expire()
             cherrypy.log("Logged out of session")
             
@@ -258,6 +259,12 @@ class ApiCollection(object):
         }
         return json.dumps(response)
         
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def ping_check(self):
+        """ redirects to ping check"""
+        raise cherrypy.HTTPRedirect('/api/ping_check')
 
 #####
 ## External Functions

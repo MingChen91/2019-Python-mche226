@@ -2,9 +2,10 @@ import urllib.request
 import json
 import nacl.encoding
 import nacl.signing
+from threading import Thread
 from time import time
 from server_api import get_loginserver_record
-from helper_modules import send_data,get_ip,get_port,get_connect_location
+from helper_modules import send_data,get_ip,get_port,get_connect_location,get_internal_port
 import server_api
 import database
 
@@ -53,8 +54,6 @@ def tx_privatemessage (username,api_key,target_username,login_server_record,priv
     """ Use this API to transmit a secret message between users. 
     'Meta' information is public, the message itself is private """
     # address to send to 
-    
-
     url = "http://" + connection_address + "/api/rx_privatemessage"    
     
     headers = {
@@ -106,12 +105,8 @@ def tx_privatemessage (username,api_key,target_username,login_server_record,priv
     else:
         response = send_data(url,headers,payload_data)
 
-   
-
     if isinstance(response,dict):
         return response
-    else: 
-        print("couldn't reach")
 
 
 def tx_ping_check(connection_address):
@@ -146,24 +141,29 @@ def tx_ping_check(connection_address):
 def broadcast_to_all(username,api_key,loginserver_record,priv_key_hex_str,message):
     """ Broadcast to all users that are online"""
     list_of_users = database.get_online_users()
-    # print(list_of_users)
     for users in list_of_users:
-        print('broadcasting to: ' +users[0])
-        if users[0] == 'admin':
-            continue
-        ip = users[2]
-        tx_broadcast(username,api_key,loginserver_record,priv_key_hex_str,ip,message)
+        if users[0] == username:
+            ip = str(get_ip()) + ':' + str(get_internal_port())
+        else:
+            ip = users[2]
+        thread = Thread(target = tx_broadcast,args = (username,api_key,loginserver_record,priv_key_hex_str,ip,message))
+        thread.start()
 
 
 def private_message_all(username,api_key,target_username,loginserver_record,priv_key_hex_bytes,message):
     """send copies of private message to everyone online, except for self, add one into database directly along with a copy signed by myself"""
     list_of_users = database.get_online_users()
     # print(list_of_users)
+    
     for users in list_of_users:
-        print('private messaging to: ' + users[0])
+        # send self copy or not
         if users[0] == username:
-            tx_privatemessage (username,api_key,target_username,loginserver_record,priv_key_hex_bytes,message,users[2],True)
+            self_copy = True
+        else:
+            self_copy = False
+
         connection_address = users[2]
-        tx_privatemessage (username,api_key,target_username,loginserver_record,priv_key_hex_bytes,message,connection_address)
+        thread = Thread(target = tx_privatemessage,args =(username,api_key,target_username,loginserver_record,priv_key_hex_bytes,message,connection_address,self_copy))
+        thread.start()
 
     # reconstruct pubkey to yourself

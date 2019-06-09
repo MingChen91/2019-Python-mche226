@@ -8,7 +8,7 @@ import nacl.utils
 import nacl.secret
 from time import time
 import key_manager
-from helper_modules import get_ip,send_data,get_port,get_connect_location
+from helper_modules import get_ip,send_data,get_port,get_connect_location,get_external_ip
 
     
 def load_api_key(username,password):
@@ -196,7 +196,10 @@ def report(username,api_key,private_key_str,status = 'online'):
     verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
 
     # Connection Address
-    connection_address = get_ip()
+    # For use at uni
+    # connection_address = get_ip()
+    # For use outside uni. Requires port forward
+    connection_address = get_external_ip()
     listening_port = str(get_port())
     connection_location = str(get_connect_location())
 

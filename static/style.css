@@ -3,7 +3,10 @@ body{
 	background-color:white;
 	color:#99738E;
 	font-family:Arial, Helvetica, sans-serif;
-    line-height:1.6em;
+	line-height:1.6em;
+	display:table;
+	width:100%;
+
 	margin:0px; 
 }
 
@@ -102,10 +105,9 @@ body{
 	border-radius: 5px;
 	border-width : 5px;
 	float:right;
-	width:20%;
 	min-width: 200px;
 	height:100%;
-	background-color:darkslateblue;
+	background-color: rgba(0,0,0,.8);
 	color:whitesmoke;
 	overflow-x: hidden;
 	overflow-y: scroll;
@@ -128,37 +130,41 @@ body{
   
 /* Track */
 ::-webkit-scrollbar-track {
-	background: #f1f1f1; 
+	background: #b87f8b; 
 }
   
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: rgb(4, 15, 170); 
+	background: rgb(62, 4, 170); 
 }
   
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-	background: rgb(0, 102, 255); 
+	background: rgb(53, 131, 248); 
 }
 
 
+/* broadcast box */
 #broadcast_div{
 	border-style: solid;
 	margin: auto;
 	height:100%;
-	overflow-x: hidden;
+	overflow-x: auto;
 	overflow-y: scroll;
 }
 
 /* broadcast table */
 .broadcast_table {
+	position: right;
 	color: black;
-	text-align: left;
+	text-align: center;
 	table-layout:fixed;
 	width:800px;
 
 }
 
 .broadcast_table td{
-	border:solid 1px #fab; width:100px; word-wrap:break-word;
+	border:solid 1px #fab; 
+	width:33%; 
+	word-wrap:break-word;
 }

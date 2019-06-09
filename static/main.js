@@ -25,26 +25,22 @@ function list_users(){
         // for loops to add them in order  
         Object.keys(onlineusers).forEach(function(key){
             if (onlineusers[key].status == "online"){
-                let onlineuser_uppercase = onlineusers[key].username.charAt(0).toUpperCase() + onlineusers[key].username.substring(1);
-               document.getElementById("usersBar").innerHTML += "<li>" + onlineuser_uppercase +": Online </li>";
+               document.getElementById("usersBar").innerHTML += "<li>" + onlineusers[key].username +": Online </li>";
             }
         });
         Object.keys(onlineusers).forEach(function(key){
             if (onlineusers[key].status == "busy"){
-                let onlineuser_uppercase = onlineusers[key].username.charAt(0).toUpperCase() + onlineusers[key].username.substring(1);
-               document.getElementById("usersBar").innerHTML += "<li>" + onlineuser_uppercase +": busy </li>";
+               document.getElementById("usersBar").innerHTML += "<li>" + onlineusers[key].username +": busy </li>";
             }
         });
         Object.keys(onlineusers).forEach(function(key){
             if (onlineusers[key].status == "away"){
-                let onlineuser_uppercase = onlineusers[key].username.charAt(0).toUpperCase() + onlineusers[key].username.substring(1);
-               document.getElementById("usersBar").innerHTML += "<li>" + onlineuser_uppercase +": busy </li>";
+               document.getElementById("usersBar").innerHTML += "<li>" + onlineusers[key].username +": busy </li>";
             }
         });
         Object.keys(onlineusers).forEach(function(key){
             if (onlineusers[key].status == "offline"){
-                let onlineuser_uppercase = onlineusers[key].username.charAt(0).toUpperCase() + onlineusers[key].username.substring(1);
-               document.getElementById("usersBar").innerHTML += "<li>" + onlineuser_uppercase +": Offline </li>";
+               document.getElementById("usersBar").innerHTML += "<li>" + onlineusers[key].username +": Offline </li>";
             }
         });
         document.getElementById("usersBar").innerHTML += '</ul>';  
@@ -64,8 +60,8 @@ function report(){
 
 // private message
 function private_message(){
-    let message = "another message";
-    let target_username = 'tche614';
+    let message = "allahuuhuasdf";
+    let target_username = 'jyao413';
     let data = {'message':message, 'target_username':target_username}
     
     $.ajax({

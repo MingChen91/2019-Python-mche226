@@ -6,7 +6,11 @@ from time import ctime
 ## USED AS CONFIG
 ##
 def get_port():
-    """ Set your Listening port here"""
+    """ Set your external port here"""
+    return 80
+
+def get_internal_port():
+    """ Set your internal port"""
     return 1234
 
 def get_connect_location():
@@ -16,12 +20,13 @@ def get_connect_location():
 ## USED AS CONFIG
 ##
 
-def get_ip():
+def get_external_ip():
     """ Returns public IP by getting it from ident.me """
-    # if identme is down, use the commented code. which only gets local IP. sometimes different to public ip
-    # external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
-    # return external_ip
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
 
+
+def get_ip():
     """ Returns the local IP"""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -45,7 +50,7 @@ def send_data(url, headers = None, data = None):
         else:
             req = urllib.request.Request(url, data = data, headers=headers)
 
-        response = urllib.request.urlopen(req,timeout=2)
+        response = urllib.request.urlopen(req,timeout=5)
         data = response.read() # read the received bytes
         encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
         response.close()

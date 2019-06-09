@@ -18,7 +18,7 @@ import helper_modules
 # The address we listen for connections on
 
 LISTEN_IP =helper_modules.get_ip()
-LISTEN_PORT = helper_modules.get_port()
+LISTEN_PORT = 1234
 
 
 def runMainApp():
