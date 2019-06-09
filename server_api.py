@@ -64,10 +64,13 @@ def get_loginserver_record(username,api_key):
         print("Error in get_loginserver_record")
 
 
-def add_privatedata (username,api_key,priv_password):
+def add_privatedata (username,api_key,priv_password,private_data,private_key_str):
     """Use this API to save symmetrically encrypted private data for a given user. It will
     automatically delete previously uploaded private data. """
 
+    if (len(private_data) != 6):
+        raise IndexError('Private data list does not have the right amount of data. Need 6 lists')
+        
     # Authentication
     url = "http://cs302.kiwi.land/api/add_privatedata"
     headers = {
@@ -75,17 +78,18 @@ def add_privatedata (username,api_key,priv_password):
         'X-apikey': api_key,
         'Content-Type' : 'application/json; charset=utf-8',
     }
-    # Private Data TODO from database
-    private_key_hex_str = key_manager.return_private_key().decode('utf-8')
-    blocked_pubkeys= []
-    blocked_usernames= []
-    blocked_words= []
-    favourite_message_signature= []
-    friends_usernames= []
+    
+    # Private data
+    prikeys=private_data[0]
+    blocked_pubkeys= private_data[1]
+    blocked_usernames= private_data[2]
+    blocked_words= private_data[3]
+    favourite_message_signature= private_data[4]
+    friends_usernames= private_data[5]
 
     # Generating Payload
     private_data = {
-        "prikeys": [private_key_hex_str],
+        "prikeys": prikeys,
         "blocked_pubkeys": blocked_pubkeys,
         "blocked_usernames":blocked_usernames,
         "blocked_words":blocked_words,
@@ -95,7 +99,7 @@ def add_privatedata (username,api_key,priv_password):
     private_data_json = json.dumps(private_data)
     private_data_json_bytes = private_data_json.encode('utf-8')
     # Signing key
-    signing_key = nacl.signing.SigningKey(private_key_hex_str, encoder= nacl.encoding.HexEncoder)
+    signing_key = nacl.signing.SigningKey(private_key_str, encoder= nacl.encoding.HexEncoder)
     # Login server record
     loginserver_record_str = get_loginserver_record(username,api_key)
     # Time stamp
@@ -140,6 +144,8 @@ def add_privatedata (username,api_key,priv_password):
     else: 
         print("Error in add_privatedata")    
 
+# privatedata = [["ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2"],['blockedpubkey1'],["blockeduser1","blockeduser2"],['blockedwords'],["fav sign"],['friends']]
+# print(add_privatedata('mche226','jV2KJb7lImzUs3Lqz2l5','dognuts',privatedata,'ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2'))
 
 def get_privatedata(username,api_key,priv_password):
     """ Use this API to load the saved symmetrically encrypted private data for a user. Enter private password """
@@ -168,9 +174,9 @@ def get_privatedata(username,api_key,priv_password):
             return decrypted_private_data_dict
         except  Exception as error:
             print (error)
+# print(get_privatedata('mche226',"jV2KJb7lImzUs3Lqz2l5","dognuts"))
 
-
-def report(username,api_key,status = 'online'):
+def report(username,api_key,private_key_str,status = 'online'):
     """ Informs login server about connection information. 
     Call this at least once every 5 minutes and at most once
     every 30 seconds. Optional status 'online, 'away', 'busy', 'offline'"""
@@ -181,11 +187,10 @@ def report(username,api_key,status = 'online'):
         'X-apikey': api_key,
         'Content-Type' : 'application/json; charset=utf-8',
     }
-
-    private_key_hex = key_manager.return_private_key()
-    
+   
     # Grab the private key
-    signing_key = nacl.signing.SigningKey(private_key_hex, encoder=nacl.encoding.HexEncoder)
+    private_key_hex_b = bytes(private_key_str,encoding = 'utf-8')
+    signing_key = nacl.signing.SigningKey(private_key_hex_b, encoder=nacl.encoding.HexEncoder)
     # Get the verify key from that
     verify_key = signing_key.verify_key
     verify_key_hex_str =  verify_key.encode(nacl.encoding.HexEncoder).decode('utf-8')
@@ -194,7 +199,6 @@ def report(username,api_key,status = 'online'):
     connection_address = get_ip()
     listening_port = str(get_port())
     connection_location = str(get_connect_location())
-
 
     payload = {
         "connection_location": connection_location,
@@ -211,10 +215,9 @@ def report(username,api_key,status = 'online'):
         return response
     else: 
         print("Error in reporting")
-# print(report("mche226","95qBUbrKtccHqwsZjsBE"))
 
 
-def add_pubkey(username,api_key):
+def add_pubkey(username,api_key,private_key_str):
     """Associate a public key with your account. This key pair is used for signing
     returns the response as a dict"""
 
@@ -223,7 +226,7 @@ def add_pubkey(username,api_key):
     # generate new keypair
     # new_key = nacl.signing.SigningKey.generate()
     # use existing keypair 
-    private_key_hex_bytes = key_manager.return_private_key()
+    private_key_hex_bytes = bytes(private_key_str,encoding='utf-8')
     headers = {
         'X-username': username,
         'X-apikey': api_key,
@@ -292,8 +295,8 @@ def list_users(username,api_key):
     else:
         print("Error in listing users")
 
-# print(list_users('mche226','95qBUbrKtccHqwsZjsBE'))
-def ping (username,api_key):
+# print(list_users('mche226','zTbpbfXfBMa6rgizC7QN'))
+def ping (username,api_key,private_key_str):
     """Calls the API ping and returns the response as a dictionary"""
 
     url = "http://cs302.kiwi.land/api/ping"
@@ -304,7 +307,7 @@ def ping (username,api_key):
     }
     
     # reads the stored key and uses that
-    private_key_hex_bytes = key_manager.return_private_key()
+    private_key_hex_bytes = bytes(private_key_str,encoding = 'utf-8')
 
     # Uses the stored signing key hex bytes to reconstruct the key pair. 
     signing_key = nacl.signing.SigningKey(private_key_hex_bytes, encoder=nacl.encoding.HexEncoder)

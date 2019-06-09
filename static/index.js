@@ -1,6 +1,3 @@
-
-
-
 //submits the form details to server to get new API key and log in
 function submit_click(){
     let username = document.getElementById("username").value
@@ -29,14 +26,4 @@ function submit_click(){
     });
 };
 
-// signout
-function sign_out(){
-    $.ajax({
-        method: 'GET',
-        url:'/signout',
-    }).done(function(data){
-        alert("Come back again soon =)")
-        window.location.href = "/main";
-    });
-}
 

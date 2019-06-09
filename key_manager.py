@@ -7,3 +7,4 @@ def return_private_key():
     file_lines = file.readline()
     file.close()    
     return str.encode(file_lines)
+return_private_key()

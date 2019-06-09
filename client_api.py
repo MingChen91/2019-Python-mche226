@@ -43,9 +43,11 @@ def tx_broadcast(username,api_key,priv_key_hex,ip_address,message = "Default Mes
     # send the data
     response = send_data(url, headers, payload_data)
     if isinstance(response,dict):
+        print('Broadcast ok')
         return response
     else: 
         print("Error in broadcasting to " + ip_address)
+        return False
 
 
 def tx_privatemessage (username,api_key,target_username,priv_key_hex_bytes,message,connection_address):
@@ -115,14 +117,41 @@ def tx_ping_check(connection_address):
     payload = {
         "my_time" : my_time,
         "connection_address":connection_address,
-        "my_active_usernames":"THIS IS OPTIONAL SO I'M NOT DOING IT",
+        "my_active_usernames":"n/a",
         "connection_location":connection_location
     }
     payload_data = json.dumps(payload).encode('utf-8')
 
     response = send_data(url,headers = headers,data=payload_data)
-    print (response)
+    
+    try:
+        if (response['response'] == 'ok'):
+            return True
+    except:
+        return False
 
 
-tx_ping_check('172.24.15.67:1234')
+def broadcast_to_all(username,api_key,priv_key_hex_str,message):
+    """ Broadcast to all users that are online"""
+    list_of_users = database.get_online_users()
+    # print(list_of_users)
+    for users in list_of_users:
+        print('broadcasting to: ' +users[0])
+        if users[0] == 'admin':
+            continue
+        ip = users[2]
+        tx_broadcast(username,api_key,priv_key_hex_str,ip,message)
 
+
+def private_message_all(username,api_key,target_username,priv_key_hex_bytes,message):
+    """send copies of private message to everyone online, except for self, add one into database directly along with a copy signed by myself"""
+    list_of_users = database.get_online_users()
+    # print(list_of_users)
+    for users in list_of_users:
+        print('private messaging to: ' + users[0])
+        connection_address = users[2]
+        tx_privatemessage (username,api_key,target_username,priv_key_hex_bytes,message,connection_address)
+
+    # reconstruct pubkey to yourself
+    sing
+    # add signed version by yourself 

@@ -3,8 +3,10 @@ import urllib.request
 import json
 import base64
 import server_api
+import client_api
 import database
 import helper_modules
+from cgi import escape
 from time import time
 from jinja2 import Environment, FileSystemLoader
 
@@ -12,7 +14,6 @@ from jinja2 import Environment, FileSystemLoader
 env = Environment(loader = FileSystemLoader('static'))
 index_page= env.get_template('index.html')
 main_page= env.get_template('main.html')
-
 
 
 class MainApp(object):
@@ -47,11 +48,11 @@ class MainApp(object):
         """ Serves the main html"""
         username = cherrypy.session.get('username')
         if username is None:
-            # redirect to index page
+            # redirect to index page if no active session
             raise cherrypy.HTTPRedirect('/index')
         else:
-            return main_page.render()
 
+            return main_page.render(username = username.capitalize())
 
 
     ##
@@ -74,7 +75,6 @@ class MainApp(object):
         if success != False:
             # tries to load their private data. 
             private_data = load_private_data(incoming_data['username'],success['api_key'],incoming_data['priv_password'])
-
             if private_data == True:
                 cherrypy.session['username'] = incoming_data['username']
                 cherrypy.session['api_key'] = success['api_key']
@@ -94,8 +94,8 @@ class MainApp(object):
         username = cherrypy.session.get('username')
         if username is None:
             cherrypy.log("Already logged out")
-            
         else:
+            server_api.report(cherrypy.session.get('username'),cherrypy.session.get('api_key'),cherrypy.session['privkeys'],'offline')
             cherrypy.lib.sessions.expire()
             cherrypy.log("Logged out of session")
             
@@ -104,20 +104,47 @@ class MainApp(object):
     # Listing users
     ##
     @cherrypy.expose
+    @cherrypy.tools.json_out()
     def list_users(self):
         """ Calls refreshes all the status of other users"""
         # Calls list users and adds their data to the database
-        # Ping check all of them to see who has an active and correct connection
+        database.update_accounts_data(cherrypy.session.get('username'),cherrypy.session.get('api_key'))
         # Returns the ones with active connections. 
-        pass
-        # server_api.list_users(cherrypy.session.get('username'), cherrypy.session.get('api_key'))
+        response = database.get_all_users()
+        return json.dumps(response)
 
 
     @cherrypy.expose
-    def broadcast(self, message=None):
-        """Check their name and password and send them either to the main page, or back to the main login screen."""
-        pass
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def report(self) :
+        # Reports status to server
+        incoming_data =cherrypy.request.json
+        status = incoming_data['status']
+        # tries to report
+        success = server_api.report(cherrypy.session.get('username'),cherrypy.session.get('api_key'),cherrypy.session.get('privkeys'),status)
+        if success == None:
+            return json.dumps({"response":"Can't report"})
+        else:
+            return json.dumps({"response":"ok"})
+        
 
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def broadcast(self):
+        """ Call this API to send a broadcast to all the users that are reported as online"""
+        incoming_data = cherrypy.request.json
+        message = incoming_data['message']
+        client_api.broadcast_to_all(cherrypy.session.get('username'),cherrypy.session.get('api_key'),cherrypy.session.get('privkeys'),message)
+        return json.dumps({"response" : "ok"})
+
+    
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def get_broadcast(self):
+        """ Fetches all the broadcast message from database"""
+        return json.dumps(database.get_broadcast_message())
 
 ###
 # Interal Functions
@@ -143,7 +170,7 @@ def load_private_data(username,api_key,priv_password):
         return False
     else: 
         # loads all the data into sessions
-        cherrypy.session['privkeys'] = private_data['prikeys']
+        cherrypy.session['privkeys'] = private_data['prikeys'][0]
         return True
 
 
@@ -167,7 +194,13 @@ class ApiCollection(object):
         """ Endpoint for other users to send broadcasts to this server"""
         # incoming_data = json.loads(cherrypy.request.body.read().decode('utf-8'))
         incoming_data =cherrypy.request.json
-        print(incoming_data)
+        # Preventing HTML injections
+        loginserver_record = escape(incoming_data['loginserver_record'], quote=True)
+        message = escape(incoming_data['message'], quote=True)
+        sender_created_at = escape(incoming_data['sender_created_at'], quote=True)
+        signature = escape(incoming_data['signature'], quote=True)
+
+        database.add_broadcast_message(loginserver_record,message,sender_created_at,signature)
         response= {
             "response": "ok"
         }
@@ -179,14 +212,23 @@ class ApiCollection(object):
     @cherrypy.tools.json_out()
     def rx_privatemessage(self):
         """ Endpoint for other users to send private messages to this server"""
-        incoming_data =cherrypy.request.json
-        print(incoming_data)
+        incoming_data = cherrypy.request.json
+        loginserver_record = escape(incoming_data['loginserver_record'],quote=True)
+        target_pubkey = escape(incoming_data['target_pubkey'],quote=True)
+        target_username = escape(incoming_data['target_username'],quote=True)
+        encrypted_message = escape(incoming_data['encrypted_message'],quote=True)
+        sender_created_at = escape(incoming_data['sender_created_at'],quote=True)
+        signature = escape(incoming_data['signature'],quote=True)
+
+        database.add_private_message(loginserver_record,target_pubkey,target_username,encrypted_message,sender_created_at,signature,'')
+
         response= {
             "response": "ok"
         }
         
         return json.dumps(response)
 
+    
     @cherrypy.expose
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()

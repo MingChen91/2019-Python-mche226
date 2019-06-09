@@ -1,6 +1,20 @@
 import socket
 import urllib.request
 import json
+from time import ctime
+##
+## USED AS CONFIG
+##
+def get_port():
+    """ Set your Listening port here"""
+    return 1234
+
+def get_connect_location():
+    """ Set your connection address here, 0 for uni ethernet, 1 for uni wireless, 2 for rest of the world"""
+    return 1
+##    
+## USED AS CONFIG
+##
 
 def get_ip():
     """ Returns public IP by getting it from ident.me """
@@ -20,15 +34,7 @@ def get_ip():
     # print(IP)
     return IP
 
-def get_port():
-    """ Set your Listening port here"""
-    return 1234
 
-def get_connect_location():
-    """ Set your connection address here, 0 for uni ethernet, 1 for uni wireless, 2 for rest of the world"""
-    return 1
-
-    
 def send_data(url, headers = None, data = None):
     """ Module used to communicate with other APIs. """
     try:
@@ -39,16 +45,29 @@ def send_data(url, headers = None, data = None):
         else:
             req = urllib.request.Request(url, data = data, headers=headers)
 
-        response = urllib.request.urlopen(req)
+        response = urllib.request.urlopen(req,timeout=2)
         data = response.read() # read the received bytes
         encoding = response.info().get_content_charset('utf-8') #load encoding if possible (default to utf-8)
         response.close()
         return json.loads(data.decode(encoding))
-        
     except urllib.error.HTTPError as error:
         print(error.read())
-        return error
-    
+        return 0
+    except urllib.error.URLError as error:
+        if isinstance(error.reason,socket.timeout):
+            print(error.reason)
+            return 0
     except Exception as error:
         print (error)
-        return error 
+        return 0 
+
+
+def convert_time(time_str):
+    """converts time to local time"""
+    if (type(time_str) == float):
+        local_time = ctime(time_str)
+    else:
+        local_time = ctime(float(time_str))
+    return(local_time)
+
+

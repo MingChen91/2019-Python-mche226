@@ -1,15 +1,25 @@
 {% extends 'template.html' %}
+
+{% block username %}
+<!-- Account Settings -->
+<li><a href="#">{{username}}</a></li>
+{% endblock username %}
+
 {% block section %}
 <!-- SECTION -->
 <section class = "section">
-    <div class = "container">
-        <h1>
-            Nice <BR>
-            You've logged in.
-        </h1>
-    </div>
-    <div id = "usersBar">
-        <p>hello</p>
+    <div class = "section_wrap">
+        <div id = "usersBar">
+            <!-- filled in with javascript -->
+        </div>
+        <div id = "broadcast">
+            <label>Say hi to everyone!</label><br>
+            <textarea id = "broadcast_message" name="Say hi to everyone!" cols="20" rows="15"></textarea><br>
+            <button class ="button" onclick = broadcast()> broadcast</button>
+        </div>
+        <div id = "broadcast_div">
+            <!-- created from javascript -->
+        </div>
     </div>
 </section>
 <script src="static/main.js"></script>

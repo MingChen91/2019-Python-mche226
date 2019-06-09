@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- HEAD -->
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name = "Description" content = "CS302 client side webapp">
-    <title>TweetieChat</title>
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-    <link rel = "stylesheet" type = "text/css" href = "static/style.css">
-</head>
-<!-- BODY -->
-<body>
-    <!-- HEADER -->
-    <header id = "main-header">
-        <div class ="container">
-            <h1>TweetieChat</h1>
-        </div>
-    </header>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name = "Description" content = "CS302 client side webapp">
+        <title>TweetieChat</title>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+        <link rel = "stylesheet" type = "text/css" href = "static/style.css">
+    </head>
+    <!-- BODY -->
+    <body>
+        <!-- HEADER -->
+        <header id = "main-header">
+            <div class ="container">
+                <h1>TweetieChat</h1>
+            </div>
+        </header>
 
-    <!-- NAVBAR -->
-    <nav id = "navbar">
-        <div class ="container"> 
-            <ul>
-                <li><a href="/main">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="https://github.com/uoa-cs302/2019-Python-mche226" target="_blank" >Github</a></li>
-                <li><a href="#" onclick = "sign_out()"> Sign Out</a></li>
-            </ul>
-        </div>
-    </nav>
+        <!-- NAVBAR -->
+        <nav id = "navbar">
+            <div class ="container"> 
+                <ul>
+                    <li><a href="/main">Home</a></li>
+                    <li><a href="https://github.com/uoa-cs302/2019-Python-mche226" target="_blank" >Github</a></li>
+                    {%block username%}
 
-    <!-- Section -->
-    {% block section %}
+                    {%endblock username%}
+                    <li><a href="#" onclick = "sign_out()">Sign Out</a></li>
+                </ul>
+            </div>
+        </nav>
 
-    {% endblock %}
-    <footer id="main-footer">
-        <p>Copyright &copy; 2019 MCHE226</p>
-    </footer>
-</body>
+        <!-- Section -->
+        {% block section %}
+
+        {% endblock %}
+        <footer id="main-footer">
+            <p>Copyright &copy; 2019 MCHE226</p>
+        </footer>
+        <script src="static/template.js"></script>
+
+    </body>
+</div>
 </html>
