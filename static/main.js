@@ -62,6 +62,22 @@ function report(){
     })
 };
 
+// private message
+function private_message(){
+    let message = "another message";
+    let target_username = 'tche614';
+    let data = {'message':message, 'target_username':target_username}
+    
+    $.ajax({
+        method: 'POST',
+        url: '/private_message',
+        data : JSON.stringify(data),
+        contentType:'application/json'
+    }).done(function(data){
+        alert('pm finished')
+   });
+}
+
 // broadcast
 function broadcast(){
     let message = document.getElementById("broadcast_message").value;

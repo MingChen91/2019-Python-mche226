@@ -10,7 +10,7 @@ import database
 
 from key_manager import return_private_key
 
-def tx_broadcast(username,api_key,priv_key_hex,ip_address,message = "Default Message"):
+def tx_broadcast(username,api_key,login_server_record,priv_key_hex,ip_address,message = "Default Message"):
     """ Use this api to transmit a signed broadcast between users. """
     # Address to send to
     url = "http://"+ip_address+"/api/rx_broadcast"
@@ -21,7 +21,6 @@ def tx_broadcast(username,api_key,priv_key_hex,ip_address,message = "Default Mes
         'Content-Type' : 'application/json; charset=utf-8',
     }
     # payload 
-    login_server_record = get_loginserver_record(username,api_key)
     time_creation = str(time())
     
     # Signing the message
@@ -50,10 +49,12 @@ def tx_broadcast(username,api_key,priv_key_hex,ip_address,message = "Default Mes
         return False
 
 
-def tx_privatemessage (username,api_key,target_username,priv_key_hex_bytes,message,connection_address):
+def tx_privatemessage (username,api_key,target_username,login_server_record,priv_key_hex_bytes,message,connection_address, self_copy = False):
     """ Use this API to transmit a secret message between users. 
     'Meta' information is public, the message itself is private """
-       # address to send to 
+    # address to send to 
+    
+
     url = "http://" + connection_address + "/api/rx_privatemessage"    
     
     headers = {
@@ -63,7 +64,6 @@ def tx_privatemessage (username,api_key,target_username,priv_key_hex_bytes,messa
     }
     
     # Payload data
-    login_server_record = get_loginserver_record(username,api_key)
     sender_created_at = str(time())
     # find targer pubkey
     target_pubkey_str = database.get_target_pubkey(target_username)
@@ -73,14 +73,14 @@ def tx_privatemessage (username,api_key,target_username,priv_key_hex_bytes,messa
     message_b = bytes(message,encoding = 'utf-8')
     verifykey = nacl.signing.VerifyKey(target_pubkey_bytes, encoder = nacl.encoding.HexEncoder)
     publickey = verifykey.to_curve25519_public_key()
-    sealed_box = nacl.public.SealedBox(publickey)
-    encrypted = sealed_box.encrypt(message_b, encoder = nacl.encoding.HexEncoder)
+    s_sealed_box = nacl.public.SealedBox(publickey)
+    encrypted = s_sealed_box.encrypt(message_b, encoder = nacl.encoding.HexEncoder)
     encrypted_message = encrypted.decode('utf-8')
 
     #signing message
-    signing_key = nacl.signing.SigningKey(priv_key_hex_bytes,nacl.encoding.HexEncoder)
+    s_signing_key = nacl.signing.SigningKey(priv_key_hex_bytes,nacl.encoding.HexEncoder)
     signature_bytes = bytes(login_server_record+target_pubkey_str+target_username+ encrypted.decode('utf-8') +sender_created_at,encoding = 'utf-8')
-    signature = signing_key.sign(signature_bytes,encoder=nacl.encoding.HexEncoder)
+    signature = s_signing_key.sign(signature_bytes,encoder=nacl.encoding.HexEncoder)
     signature_str = signature.signature.decode('utf-8')
         
     payload = {
@@ -95,11 +95,23 @@ def tx_privatemessage (username,api_key,target_username,priv_key_hex_bytes,messa
     payload_str = json.dumps(payload)
     payload_data = payload_str.encode('utf-8')
 
-    response = send_data(url,headers,payload_data)
+    if self_copy == True :
+        # sign the message yourself and add to database directly
+        s_signing_key = nacl.signing.SigningKey(priv_key_hex_bytes,nacl.encoding.HexEncoder)
+        s_verify_key = s_signing_key.verify_key
+        s_public_key = s_verify_key.to_curve25519_public_key()
+        s_sealed_box = nacl.public.SealedBox(s_public_key)
+        self_encrypted = s_sealed_box.encrypt(bytes(message,encoding = 'utf-8'),encoder = nacl.encoding.HexEncoder)
+        database.add_private_message(login_server_record,target_pubkey_str,target_username,encrypted_message,sender_created_at,signature_str,self_encrypted)
+    else:
+        response = send_data(url,headers,payload_data)
+
+   
+
     if isinstance(response,dict):
         return response
     else: 
-        print("Error in private message to " + target_username)
+        print("couldn't reach")
 
 
 def tx_ping_check(connection_address):
@@ -131,7 +143,7 @@ def tx_ping_check(connection_address):
         return False
 
 
-def broadcast_to_all(username,api_key,priv_key_hex_str,message):
+def broadcast_to_all(username,api_key,loginserver_record,priv_key_hex_str,message):
     """ Broadcast to all users that are online"""
     list_of_users = database.get_online_users()
     # print(list_of_users)
@@ -140,18 +152,18 @@ def broadcast_to_all(username,api_key,priv_key_hex_str,message):
         if users[0] == 'admin':
             continue
         ip = users[2]
-        tx_broadcast(username,api_key,priv_key_hex_str,ip,message)
+        tx_broadcast(username,api_key,loginserver_record,priv_key_hex_str,ip,message)
 
 
-def private_message_all(username,api_key,target_username,priv_key_hex_bytes,message):
+def private_message_all(username,api_key,target_username,loginserver_record,priv_key_hex_bytes,message):
     """send copies of private message to everyone online, except for self, add one into database directly along with a copy signed by myself"""
     list_of_users = database.get_online_users()
     # print(list_of_users)
     for users in list_of_users:
         print('private messaging to: ' + users[0])
+        if users[0] == username:
+            tx_privatemessage (username,api_key,target_username,loginserver_record,priv_key_hex_bytes,message,users[2],True)
         connection_address = users[2]
-        tx_privatemessage (username,api_key,target_username,priv_key_hex_bytes,message,connection_address)
+        tx_privatemessage (username,api_key,target_username,loginserver_record,priv_key_hex_bytes,message,connection_address)
 
     # reconstruct pubkey to yourself
-    sing
-    # add signed version by yourself 

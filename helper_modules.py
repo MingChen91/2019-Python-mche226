@@ -66,7 +66,7 @@ def convert_time(time_str):
     """converts time to local time"""
     if (type(time_str) == float):
         local_time = ctime(time_str)
-    else:
+    else :
         local_time = ctime(float(time_str))
     return(local_time)
 

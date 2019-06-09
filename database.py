@@ -126,9 +126,9 @@ def add_private_message(loginserver_record,target_pubkey,target_username,encrypt
     # cursor
     c = conn.cursor()
     # insert data
-    sender = loginserver_record[0]
+    sender = loginserver_record.split(',')[0]
     data = (loginserver_record,target_pubkey,target_username,encrypted_message,sender_created_at,sender,signature,self_copy)
-    c.execute("""INSERT INTO private_message (loginserver_record,target_pubkey,target_username,encrypted_message,sender_created_at,signature,sender,self_copy) VALUES (?,?,?,?,?,?,?,?)""",data)
+    c.execute("""INSERT INTO private_message (loginserver_record,target_pubkey,target_username,encrypted_message,sender_created_at,sender,signature,self_copy) VALUES (?,?,?,?,?,?,?,?)""",data)
     # commit
     conn.commit()
     # close the connection 

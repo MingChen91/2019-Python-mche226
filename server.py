@@ -136,8 +136,20 @@ class MainApp(object):
         """ Call this API to send a broadcast to all the users that are reported as online"""
         incoming_data = cherrypy.request.json
         message = incoming_data['message']
-        client_api.broadcast_to_all(cherrypy.session.get('username'),cherrypy.session.get('api_key'),cherrypy.session.get('privkeys'),message)
+        client_api.broadcast_to_all(cherrypy.session.get('username'),cherrypy.session.get('api_key'), cherrypy.session.get('loginserver_record'),cherrypy.session.get('privkeys'),message)
         return json.dumps({"response" : "ok"})
+
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def private_message(self):
+        """ Call this API to send a broadcast to all the users that are reported as online"""
+        incoming_data = cherrypy.request.json
+        message = incoming_data['message']
+        target_username = incoming_data['target_username']
+
+        client_api.private_message_all(cherrypy.session.get('username'),cherrypy.session.get('api_key'),target_username,cherrypy.session.get('loginserver_record'),cherrypy.session.get('privkeys'),message)
+        return json.dumps({"response" : "ok"})   
 
     
     @cherrypy.expose
@@ -156,10 +168,15 @@ def authorise_user_login(username,password):
         Returns the APIkey if is ok """
 
     response = server_api.load_api_key(username,password)
-    if response == False:
+    
+    if (response == False):
         return False
     else:
-        return response
+        cherrypy.session['loginserver_record'] = server_api.get_loginserver_record(username,response['api_key'])
+        if cherrypy.session.get('loginserver_record') != None:
+            return response
+        else:
+            return False
 
 def load_private_data(username,api_key,priv_password):
     """ Loads private data for user. If can't load private data for any reason create new private data for them"""
