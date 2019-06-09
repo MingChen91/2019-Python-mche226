@@ -6,8 +6,8 @@ body{
 	line-height:1.6em;
 	display:table;
 	width:100%;
-
 	margin:0px; 
+
 }
 
 /* main containers  */
@@ -145,26 +145,43 @@ body{
 
 
 /* broadcast box */
-#broadcast_div{
-	border-style: solid;
-	margin: auto;
+#broadcast_block{
+	/* border-style: solid; */
+	/* margin: auto; */
 	height:100%;
 	overflow-x: auto;
 	overflow-y: scroll;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 1000px;
+	float: right;
 }
 
 /* broadcast table */
 .broadcast_table {
-	position: right;
+	margin-right: 0%;
+
+	/* position: right; */
 	color: black;
 	text-align: center;
 	table-layout:fixed;
 	width:800px;
+}
+
+.broadcast_table tr:nth-child(even) {background: #CCC}
+.broadcast_table tr:nth-child(odd) {background: #FFF}
+
+.broadcast_table td{
+	width:33%; 
+	word-wrap:break-word;
 
 }
 
-.broadcast_table td{
-	border:solid 1px #fab; 
-	width:33%; 
-	word-wrap:break-word;
+
+#private_message{  
+	width: 200px;
+	height: 500px;
+	position: absolute;
+	bottom : 0;
+	left: 0;
 }

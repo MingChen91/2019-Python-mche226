@@ -7,10 +7,10 @@ $('document').ready(function(){
 
 
 // timed functions
-const refresh_time = 10000
-setInterval(list_users, refresh_time);
-setInterval(report, refresh_time);
-setInterval(get_broadcast,refresh_time)
+// const refresh_time = 10000
+// setInterval(list_users, refresh_time);
+// setInterval(report, refresh_time);
+// setInterval(get_broadcast,refresh_time)
 
 // list users function - lists the users also updates the database
 function list_users(){
@@ -127,7 +127,7 @@ function get_broadcast(){
         }
 
         // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-        var divContainer = document.getElementById("broadcast_div");
+        var divContainer = document.getElementById("broadcast_block");
         divContainer.innerHTML = "";
         divContainer.appendChild(table);
     })
