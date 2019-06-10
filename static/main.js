@@ -147,15 +147,14 @@ function private_message_box(){
 function broadcast(){
     let message = document.getElementById("broadcast_message").value;
     let data = {'message':message}
-    document.getElementById('broadcast_message').value = "";
     $.ajax({
         method: 'POST',
         url: '/broadcast',
         data : JSON.stringify(data),
         contentType:'application/json'
     }).done(function(data){
-        alert('broadcast finished')
-   });
+        document.getElementById('broadcast_message').value = "";
+    });
 };
 
 function get_broadcast(){
@@ -202,4 +201,127 @@ function get_broadcast(){
         divContainer.appendChild(table);
     })
 }
+
+
+// creating new private data
+function new_private_data(){
+    let username = document.getElementById(username).value;
+    let password = document.getElementById(password).value;
+    let priv_password = document.getElementById(priv_password).value;
+
+    let data = {'username':username,'password':password,'priv_password':priv_password}
+    $.ajax({
+        method: 'POST',
+        url: '/create_new_private_data',
+        data : JSON.stringify(data),
+        contentType:'application/json'
+    }).done(function(data){
+        alert(data)
+   });
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

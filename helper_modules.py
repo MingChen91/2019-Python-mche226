@@ -40,6 +40,7 @@ def get_ip():
     return IP
 
 
+
 def send_data(url, headers = None, data = None):
     """ Module used to communicate with other APIs. """
     try:

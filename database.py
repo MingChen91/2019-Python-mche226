@@ -214,9 +214,22 @@ def add_broadcast_message(loginserver_record,message,sender_created_at,signature
     conn = sqlite3.connect('database.db')
     # cursor
     c = conn.cursor()
+
+    # check if duplicate same time and message
+    c.execute("select message, loginserver_record from broadcast_message")
+    dupcheck = c.fetchall()
+    
     # insert data
     data = (loginserver_record,message,sender_created_at,signature)
+    # checked for duplicates
+    for existing_message in dupcheck:
+        print(existing_message)
+        if ((message == existing_message[0]) and (loginserver_record==existing_message[1])):
+            print('blocked existing')
+            return
+        
     c.execute("""INSERT INTO broadcast_message (loginserver_record,message,sender_created_at,signature) VALUES (?,?,?,?)""",data)
+    
     # commit
     conn.commit()
     # close the connection 
@@ -241,7 +254,7 @@ def get_broadcast_message():
     for row in broadcast_list:
         loginserver_record = row[0].split(',')
         sender_created_at = helper_modules.convert_time(row[2])
-        if ("!Meta:" in row[1]):
+        if ("Meta:" in row[1]):
             pass
         else:
             broadcast_dict.append({'username':loginserver_record[0],'message':row[1],'sender_created_at':sender_created_at})

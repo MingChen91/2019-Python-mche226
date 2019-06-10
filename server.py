@@ -30,16 +30,15 @@ class MainApp(object):
     # If they try somewhere we don't know, catch it here and send them to the right place.
     @cherrypy.expose
     def default(self, *args, **kwargs):
-        """The default page, given when we don't recognise where the request is for."""
-        cherrypy.response.status = 404
-        return "I DONT THINK YOU'RE SUPPOSED TO BE HERE AYE."
+        """ Redirect to index if they go to the wrong place"""
+        return index_page.render()
+
 
 
     # PAGES (which return HTML that can be viewed in browser)
     @cherrypy.expose
     def index(self):
-        """serves index.html
-        TODO error catching"""
+        """serves index.html"""
         return index_page.render()
 
 
@@ -54,6 +53,20 @@ class MainApp(object):
 
             return main_page.render(username = username.capitalize())
 
+
+    ##
+    # private data
+    ##
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def create_new_private_data(self):
+        """ Creates a new set of private keys and private data for them"""
+        # new private key hex string
+        new_priv_hex_str = server_api.new_key()
+        
+        """ Add for them """
+        pass
 
     ##
     # LOGGING IN AND OUT

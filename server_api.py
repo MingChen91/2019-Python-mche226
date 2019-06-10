@@ -8,7 +8,7 @@ import nacl.utils
 import nacl.secret
 from time import time
 import key_manager
-from helper_modules import get_ip,send_data,get_port,get_connect_location,get_external_ip
+from helper_modules import get_ip,send_data,get_port,get_connect_location,get_external_ip,get_internal_port
 
     
 def load_api_key(username,password):
@@ -197,10 +197,10 @@ def report(username,api_key,private_key_str,status = 'online'):
 
     # Connection Address
     # For use at uni
-    # connection_address = get_ip()
+    connection_address = get_ip()
     # For use outside uni. Requires port forward
-    connection_address = get_external_ip()
-    listening_port = str(get_port())
+    # connection_address = get_external_ip()
+    listening_port = str(get_internal_port())
     connection_location = str(get_connect_location())
 
     payload = {
@@ -219,6 +219,14 @@ def report(username,api_key,private_key_str,status = 'online'):
     else: 
         print("Error in reporting")
 
+def new_key():
+    """ Generates a new pair of keys and saves the private key hex"""
+    # generate new keypair
+    new_key_hex_str = nacl.signing.SigningKey.generate().encode(encoder = nacl.encoding.HexEncoder).decode('utf-8')
+    return new_key_hex_str
+
+
+
 
 def add_pubkey(username,api_key,private_key_str):
     """Associate a public key with your account. This key pair is used for signing
@@ -226,8 +234,7 @@ def add_pubkey(username,api_key,private_key_str):
 
     url = "http://cs302.kiwi.land/api/add_pubkey"
     
-    # generate new keypair
-    # new_key = nacl.signing.SigningKey.generate()
+ 
     # use existing keypair 
     private_key_hex_bytes = bytes(private_key_str,encoding='utf-8')
     headers = {
