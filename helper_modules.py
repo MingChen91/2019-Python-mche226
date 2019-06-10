@@ -11,7 +11,7 @@ def get_port():
 
 def get_internal_port():
     """ Set your internal port"""
-    return 1234
+    return 10069
 
 def get_connect_location():
     """ Set your connection address here, 0 for uni ethernet, 1 for uni wireless, 2 for rest of the world"""

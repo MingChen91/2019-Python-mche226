@@ -174,9 +174,9 @@ def get_privatedata(username,api_key,priv_password):
         except  Exception as error:
             print (error)
 
-# privatedata = [["ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2"],[''],["blockeduser1","blockeduser2"],['blockedwords'],["fav sign"],['friends']]
-# print(add_privatedata('mche226','ZHJPUX9ymBvFCkE0n9w1','asdf',privatedata,'ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2'))
-# print(get_privatedata('mche226',"ZHJPUX9ymBvFCkE0n9w1","asdf"))
+"""privatedata = [["ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2"],[''],["blockeduser1","blockeduser2"],['blockedwords'],["fav sign"],['friends']]
+print(add_privatedata('mche226','ZHJPUX9ymBvFCkE0n9w1','asdf',privatedata,'ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2'))
+print(get_privatedata('mche226',"ZHJPUX9ymBvFCkE0n9w1","asdf"))"""
 
 def report(username,api_key,private_key_str,status = 'online'):
     """ Informs login server about connection information. 
