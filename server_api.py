@@ -144,8 +144,7 @@ def add_privatedata (username,api_key,priv_password,private_data,private_key_str
     else: 
         print("Error in add_privatedata")    
 
-# privatedata = [["ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2"],['blockedpubkey1'],["blockeduser1","blockeduser2"],['blockedwords'],["fav sign"],['friends']]
-# print(add_privatedata('mche226','jV2KJb7lImzUs3Lqz2l5','dognuts',privatedata,'ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2'))
+
 
 def get_privatedata(username,api_key,priv_password):
     """ Use this API to load the saved symmetrically encrypted private data for a user. Enter private password """
@@ -174,7 +173,10 @@ def get_privatedata(username,api_key,priv_password):
             return decrypted_private_data_dict
         except  Exception as error:
             print (error)
-# print(get_privatedata('mche226',"jV2KJb7lImzUs3Lqz2l5","dognuts"))
+
+# privatedata = [["ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2"],[''],["blockeduser1","blockeduser2"],['blockedwords'],["fav sign"],['friends']]
+# print(add_privatedata('mche226','ZHJPUX9ymBvFCkE0n9w1','asdf',privatedata,'ecd0f760d4787ac45aea7e4e905c445a3fd6323b3af4871fc1ed6d5f1662cab2'))
+# print(get_privatedata('mche226',"ZHJPUX9ymBvFCkE0n9w1","asdf"))
 
 def report(username,api_key,private_key_str,status = 'online'):
     """ Informs login server about connection information. 
@@ -270,6 +272,9 @@ def add_pubkey(username,api_key,private_key_str):
     else:
         print("Error in adding pubkey")
 
+# new_priv = new_key()
+# print(new_priv)
+# print(add_pubkey('mche226','gxQPGmRWzUHPSrk1t6Fr',new_priv))
 
 def check_pubkey(username, api_key, verify_key_hex_str = "b9eba910b59549774d55d3ce49a7b4d46ab5e225cdcf2ac388cf356b5928b6bc"):
     """ Use this API to load the loginserver record for a given public key. \n 

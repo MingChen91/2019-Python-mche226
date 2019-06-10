@@ -223,7 +223,6 @@ def add_broadcast_message(loginserver_record,message,sender_created_at,signature
     data = (loginserver_record,message,sender_created_at,signature)
     # checked for duplicates
     for existing_message in dupcheck:
-        print(existing_message)
         if ((message == existing_message[0]) and (loginserver_record==existing_message[1])):
             print('blocked existing')
             return

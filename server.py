@@ -62,11 +62,28 @@ class MainApp(object):
     @cherrypy.tools.json_out()
     def create_new_private_data(self):
         """ Creates a new set of private keys and private data for them"""
+        incoming = cherrypy.request.json
+        username = incoming['username']
+        password = incoming['password']
+        priv_password = incoming['priv_password']
         # new private key hex string
         new_priv_hex_str = server_api.new_key()
-        
+
+        api_key_dict = server_api.load_api_key(username,password)
+        if api_key_dict == None:
+            return json.dumps({'response':'error getting api key'})
+
         """ Add for them """
-        pass
+        loaded_new_pubkey = server_api.add_pubkey(username,api_key_dict['api_key'],new_priv_hex_str)
+        if loaded_new_pubkey ==None:
+             return json.dumps({'response':'error adding new pubkey'})
+
+        private_data = [[new_priv_hex_str],[""],[""],[""],[""],[""]]
+        server_api.add_privatedata(username,api_key_dict['api_key'],priv_password,private_data,new_priv_hex_str)
+        
+        return json.dumps ({'response':'ok'})
+        
+
 
     ##
     # LOGGING IN AND OUT

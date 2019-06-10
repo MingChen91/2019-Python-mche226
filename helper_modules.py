@@ -70,10 +70,13 @@ def send_data(url, headers = None, data = None):
 
 def convert_time(time_str):
     """converts time to local time"""
-    if (type(time_str) == float):
-        local_time = ctime(time_str)
-    else :
-        local_time = ctime(float(time_str))
-    return(local_time)
+    try:
+        if (type(time_str) == float):
+            local_time = ctime(time_str)
+        else :
+            local_time = ctime(float(time_str))
+        return(local_time)
+    except:
+        return (time_str)
 
 

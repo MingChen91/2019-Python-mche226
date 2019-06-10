@@ -162,6 +162,7 @@ body{
 	float: right;
 	border-radius: 2px;
 	border-width : 2px;
+	
 }
 
 /* broadcast table */
@@ -199,4 +200,5 @@ body{
 	position: absolute;
 	bottom : 0;
 	left: 0;
+	overflow-y: scroll;
 }

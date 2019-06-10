@@ -203,23 +203,6 @@ function get_broadcast(){
 }
 
 
-// creating new private data
-function new_private_data(){
-    let username = document.getElementById(username).value;
-    let password = document.getElementById(password).value;
-    let priv_password = document.getElementById(priv_password).value;
-
-    let data = {'username':username,'password':password,'priv_password':priv_password}
-    $.ajax({
-        method: 'POST',
-        url: '/create_new_private_data',
-        data : JSON.stringify(data),
-        contentType:'application/json'
-    }).done(function(data){
-        alert(data)
-   });
-
-};
 
 
 
