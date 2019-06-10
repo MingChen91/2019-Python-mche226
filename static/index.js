@@ -11,7 +11,7 @@ function submit_click(){
         data : JSON.stringify(data),
         contentType:'application/json'
     }).done(function(response){
-        console.log(response)
+
         let data_json = JSON.parse(response)
         if (data_json.response == "ok"){
             window.location.href = "/main";

@@ -159,6 +159,18 @@ class MainApp(object):
         """ Fetches all the broadcast message from database"""
         return json.dumps(database.get_broadcast_message())
 
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def get_private_message(self):
+        """ Fetches all messages sent and received to a target user"""
+        incoming_data = cherrypy.request.json
+        target_username  =incoming_data['target_username']
+
+        private_messages = database.get_private_message(cherrypy.session.get('username'),target_username,cherrypy.session.get('privkeys'))
+        return json.dumps(private_messages)
+
+
 ###
 # Interal Functions
 ###

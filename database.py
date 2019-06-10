@@ -14,6 +14,7 @@ def add_accounts_data(username,pubkey,ip_address,connection_type,connection_upda
     """ Adds any new information to the accounts table in the database"""
     # make the connection to the database
     conn = sqlite3.connect('database.db')
+
     # cursor+
     c = conn.cursor()
     
@@ -87,6 +88,7 @@ def get_target_pubkey(target_username):
 def get_online_users():
     """ Fetches all the users with online as status in a dict , use this as the list of people to message"""
     conn = sqlite3.connect('database.db')
+    
     #cursor
     c = conn.cursor()
     # Try to find pubkey
@@ -147,16 +149,60 @@ def get_sender_loginserver_record(loginserver_record):
 
 def decrypt_private_message(message,priv_key_hex):
     """ Decryptes the private message using their private key"""
-    message_b= bytes(message,encoding = 'utf-8')
-    # get the private key string
-    # priv_key_hex = return_private_key()
-    # Reconstruct key
-    signing_key = nacl.signing.SigningKey(priv_key_hex, encoder= nacl.encoding.HexEncoder)
-    private_key = signing_key.to_curve25519_private_key()
+    try:
+        message_b= bytes(message,encoding = 'utf-8')
+        # Reconstruct key
+        signing_key = nacl.signing.SigningKey(priv_key_hex, encoder= nacl.encoding.HexEncoder)
+        private_key = signing_key.to_curve25519_private_key()
+        
+        unseal_box = nacl.public.SealedBox(private_key)
+        decrypted = unseal_box.decrypt(message_b,encoder= nacl.encoding.HexEncoder)
+        return (decrypted.decode('utf-8'))
+    except :
+        return "Expired Private Key"
+
+
+
+def get_private_message(username,target_username,priv_key_hex):
+    """ Fetches all messages between user and a target user \n
+    and decrypts the message before adding it to a dictionary"""
+    conn = sqlite3.connect('database.db')
     
-    unseal_box = nacl.public.SealedBox(private_key)
-    decrypted = unseal_box.decrypt(message_b,encoder= nacl.encoding.HexEncoder)
-    return (decrypted.decode('utf-8'))
+    c = conn.cursor()
+    
+    data = (target_username,username,username,target_username)
+    
+    c.execute(""" SELECT 
+                target_username, sender, encrypted_message, self_copy, sender_created_at 
+                from private_message 
+                where (target_username = ?  AND sender = ?) 
+                or (target_username = ? AND sender =?) 
+                ORDER BY sender_created_at DESC """, data)
+    
+    private_message_list = c.fetchall()
+    # Commit
+    conn.commit()
+    # Close the connection
+    conn.close()
+
+    private_message_dict = []
+    # operate over the list to decrypt the messages 
+    for messages in private_message_list:
+        # if the message is sent to myself
+        if messages[0] == username:
+            message = (decrypt_private_message(messages[2],priv_key_hex))
+            sender = target_username
+            receiver = username
+        # if the message is from me
+        elif messages[0] == target_username:
+            message = (decrypt_private_message(messages[3],priv_key_hex))
+            
+            sender = username
+            receiver = target_username
+        # add to dict
+        private_message_dict.append({"Sender": sender , "Receiver": receiver, "Message": message , "Timestamp": helper_modules.convert_time(messages[4])})
+    return private_message_dict
+
 
 
 ###
@@ -195,6 +241,8 @@ def get_broadcast_message():
     for row in broadcast_list:
         loginserver_record = row[0].split(',')
         sender_created_at = helper_modules.convert_time(row[2])
-        broadcast_dict.append({'username':loginserver_record[0],'message':row[1],'sender_created_at':sender_created_at})
-
+        if ("!Meta:" in row[1]):
+            pass
+        else:
+            broadcast_dict.append({'username':loginserver_record[0],'message':row[1],'sender_created_at':sender_created_at})
     return(broadcast_dict)

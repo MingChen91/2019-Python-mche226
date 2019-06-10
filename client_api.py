@@ -100,7 +100,7 @@ def tx_privatemessage (username,api_key,target_username,login_server_record,priv
         s_verify_key = s_signing_key.verify_key
         s_public_key = s_verify_key.to_curve25519_public_key()
         s_sealed_box = nacl.public.SealedBox(s_public_key)
-        self_encrypted = s_sealed_box.encrypt(bytes(message,encoding = 'utf-8'),encoder = nacl.encoding.HexEncoder)
+        self_encrypted = s_sealed_box.encrypt(bytes(message,encoding = 'utf-8'),encoder = nacl.encoding.HexEncoder).decode('utf-8')
         database.add_private_message(login_server_record,target_pubkey_str,target_username,encrypted_message,sender_created_at,signature_str,self_encrypted)
     else:
         response = send_data(url,headers,payload_data)

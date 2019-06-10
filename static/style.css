@@ -74,6 +74,7 @@ body{
 
 .section_wrap{
 	height:100%;
+	min-width: 1400px;
 	margin-left:10px;
 }
 
@@ -99,15 +100,15 @@ body{
 
 }
 #usersBar{
-	padding-left : 15px;
+	/* padding-left : 15px; */
 	border-style : solid;
-	border-color : rgb(136, 1, 118);
-	border-radius: 5px;
-	border-width : 5px;
+	border-color : rgb(94, 128, 240);
+	border-radius: 2px;
+	border-width : 2px;
 	float:right;
 	min-width: 200px;
 	height:100%;
-	background-color: rgba(0,0,0,.8);
+	background-color: rgba(94, 128, 240,0.8);
 	color:whitesmoke;
 	overflow-x: hidden;
 	overflow-y: scroll;
@@ -115,6 +116,10 @@ body{
 	box-sizing: border-box;
 	text-align: left;
 	margin-left: 10px;
+}
+
+#usersBar li:hover{
+	color:#f64c72;
 }
 
 /* broadcast text box*/
@@ -149,12 +154,14 @@ body{
 	/* border-style: solid; */
 	/* margin: auto; */
 	height:100%;
-	overflow-x: auto;
+	overflow-x: hidden;
 	overflow-y: scroll;
 	margin-left: auto;
 	margin-right: auto;
-	max-width: 1000px;
+	max-width: 1200px;
 	float: right;
+	border-radius: 2px;
+	border-width : 2px;
 }
 
 /* broadcast table */
@@ -168,19 +175,27 @@ body{
 	width:800px;
 }
 
-.broadcast_table tr:nth-child(even) {background: #CCC}
-.broadcast_table tr:nth-child(odd) {background: #FFF}
+.broadcast_table tr:nth-child(even) {
+	background: rgb(94, 128, 240);
+	opacity: 0.8;
+}
+.broadcast_table tr:nth-child(odd) {
+	background: #FFF;
+	opacity: 0.8;
+}
 
 .broadcast_table td{
-	width:33%; 
+	width:30%; 
 	word-wrap:break-word;
 
 }
 
 
 #private_message{  
-	width: 200px;
+	width: 600px;
 	height: 500px;
+	background: black;
+	opacity: 0.8;
 	position: absolute;
 	bottom : 0;
 	left: 0;
